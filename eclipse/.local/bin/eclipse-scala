@@ -3,4 +3,10 @@
 export SWT_GTK3=0
 export UBUNTU_MENUPROXY=0
 
-exec $HOME/.local/opt/eclipse-scala/eclipse -data $HOME/workspace-scala "$@"
+exec $HOME/.local/opt/eclipse-scala/eclipse \
+  -data $HOME/workspace-scala \
+  -vmargs \
+  -server \
+  -Xms256m \
+  -Xmx3g \
+  "$@"
