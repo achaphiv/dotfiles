@@ -23,8 +23,9 @@
     - docker-engine
     - docker-compose
     - unp
-    - openjdk-7-source
+    # FIXME: missing tzdata package
+    # - openjdk-7-source
+    # - openjdk-7-jdk
     - openjdk-8-source
-    - openjdk-7-jdk
     - openjdk-8-jdk
   become: yes
