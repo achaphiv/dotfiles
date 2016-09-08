@@ -1,0 +1,20 @@
+- name: fonts ppa
+  apt_repository: repo='ppa:no1wantdthisname/ppa'
+
+- name: PPA repositories
+  apt_repository:
+    repo: "{{ item }}"
+  with_items:
+    - "ppa:no1wantdthisname/ppa"
+    - "ppa:rvm/smplayer"
+
+- name: Common packages
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - fish
+    - chromium-browser
+    - smplayer
+    - git
+    - mpv
