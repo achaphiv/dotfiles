@@ -1,12 +1,12 @@
-- name: fonts ppa
-  apt_repository: repo='ppa:no1wantdthisname/ppa'
-
 - name: PPA repositories
   apt_repository:
     repo: "{{ item }}"
+    state: present
   with_items:
     - "ppa:no1wantdthisname/ppa"
     - "ppa:rvm/smplayer"
+    - "deb https://apt.dockerproject.org/repo ubuntu-{{ ansible_distribution_release }} main"
+  become: yes
 
 - name: Common packages
   apt:
@@ -18,3 +18,5 @@
     - smplayer
     - git
     - mpv
+    - docker-engine
+  become: yes
