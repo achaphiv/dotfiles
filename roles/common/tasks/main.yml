@@ -17,6 +17,8 @@
     - chromium-browser
     - smplayer
     - git
+    - gitg
     - mpv
     - docker-engine
+    - unp
   become: yes
