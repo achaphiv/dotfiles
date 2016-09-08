@@ -1,7 +1,6 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
-for dir in */
-do
-  echo stow $dir
-  stow $dir
-done
+set -ex
+
+which ansible-playbook || sudo apt-get install -y ansible
+ansible-playbook -vv site.yml
