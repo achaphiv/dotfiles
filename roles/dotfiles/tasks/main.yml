@@ -1,0 +1,11 @@
+- name: Stow
+  apt:
+    name: stow
+    state: present
+  become: yes
+
+- name: Symlink my dotfiles
+  shell: |
+    for dir in $HOME/dotfiles/files/*; do
+      stow -R --dir=$HOME/dotfiles/files/ --target=$HOME $(basename $dir)
+    done
