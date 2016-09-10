@@ -18,6 +18,7 @@
     - deluge-gtk
     - smplayer
     - git
+    - p7zip
     - gitg
     - mpv
     - docker-engine
