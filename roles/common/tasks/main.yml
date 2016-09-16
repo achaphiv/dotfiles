@@ -5,6 +5,7 @@
   with_items:
     - "ppa:no1wantdthisname/ppa"
     - "ppa:rvm/smplayer"
+    - "ppa:webupd8team/atom"
     - "deb https://apt.dockerproject.org/repo ubuntu-{{ ansible_distribution_release }} main"
   become: yes
 
@@ -13,6 +14,7 @@
     name: "{{ item }}"
     state: present
   with_items:
+    - atom
     - fish
     - chromium-browser
     - deluge-gtk
@@ -29,14 +31,4 @@
     # - openjdk-7-jdk
     - openjdk-8-source
     - openjdk-8-jdk
-  become: yes
-
-- name: Get atom
-  get_url:
-    url: https://atom.io/download/deb
-    dest: /tmp/atom.deb
-
-- name: Install atom
-  apt:
-    deb: /tmp/atom.deb
   become: yes
