@@ -3,4 +3,4 @@
 set -ex
 
 which ansible-playbook || sudo apt-get install -y ansible
-ansible-playbook -vv site.yml
+ansible-playbook --ask-become-pass -vv site.yml
