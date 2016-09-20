@@ -6,6 +6,7 @@
 
 - name: Symlink my dotfiles
   shell: |
-    for dir in $HOME/dotfiles/files/*; do
-      stow --dir=$HOME/dotfiles/files/ --target=$HOME $(basename $dir)
+    cd $HOME/dotfiles/files/
+    for dir in *; do
+      stow --target=$HOME $(basename $dir)
     done
