@@ -3,4 +3,6 @@
 set -ex
 
 which ansible-playbook || sudo apt-get install -y ansible
-ansible-playbook --ask-become-pass -vv site.yml
+# FIXME: ansible 2.0.0.2 doesn't ask for password correctly (issue #13728)
+sudo echo
+ansible-playbook -vv site.yml
