@@ -2,7 +2,14 @@
   apt:
     name: stow
     state: present
+  when: ansible_pkg_mgr == 'apt'
   become: yes
+
+- name: Stow (Mac)
+  homebrew:
+    name: stow
+    state: present
+  when: ansible_os_family == 'Darwin'
 
 - name: Symlink my dotfiles
   shell: |
