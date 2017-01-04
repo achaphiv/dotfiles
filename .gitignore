@@ -1,2 +1,8 @@
+# Python virtualenv
 venv/
+
+# Application data files
+files/maven/.m2/repository/
+
+# Ansible
 *.retry
