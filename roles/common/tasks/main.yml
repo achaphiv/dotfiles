@@ -34,3 +34,12 @@
     - openjdk-8-jdk
   when: ansible_pkg_mgr == 'apt'
   become: yes
+
+- name: Common packages (Mac)
+  homebrew_cask:
+    name: "{{ item }}"
+    state: present
+  when: ansible_os_family == 'Darwin'
+  with_items:
+    - java
+    - atom
