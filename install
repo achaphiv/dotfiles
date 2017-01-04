@@ -1,8 +1,16 @@
 #!/usr/bin/env bash
 
-set -ex
+set -exo pipefail
 
-which ansible-playbook || sudo apt-get install -y ansible
-# FIXME: ansible 2.0.0.2 doesn't ask for password correctly (issue #13728)
-sudo echo
+use_venv() {
+  source venv/bin/activate
+  which ansible-playbook || pip install ansible
+}
+
+create_venv() {
+  virtualenv venv
+  use_venv
+}
+
+use_venv || create_venv
 ansible-playbook -vv site.yml
