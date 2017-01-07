@@ -13,4 +13,4 @@ create_venv() {
 }
 
 use_venv || create_venv
-ansible-playbook -vv site.yml
+ansible-playbook -vv site.yml --ask-sudo-pass
