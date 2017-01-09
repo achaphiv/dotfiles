@@ -46,7 +46,7 @@ export DEBFULLNAME="Bob Chez"
 export DEBEMAIL="no1wantdthisname@gmail.com"
 
 ulimit -c unlimited
-ulimit -Sn unlimited
+ulimit -Sn unlimited || true
 
 # less colors
 #export LESS_TERMCAP_mb=$'\E[01;31m'       # begin blinking
