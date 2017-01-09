@@ -2,15 +2,7 @@
 
 set -exo pipefail
 
-use_venv() {
-  source venv/bin/activate
-  which ansible-playbook || pip install ansible
-}
-
-create_venv() {
-  virtualenv venv
-  use_venv
-}
-
-use_venv || create_venv
+virtualenv venv
+source venv/bin/activate
+which ansible-playbook || pip install ansible
 ansible-playbook -vv site.yml --ask-become-pass
