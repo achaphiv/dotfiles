@@ -51,8 +51,10 @@
   when: ansible_os_family == 'Darwin'
   with_items:
     - java
+    - android-file-transfer
     - atom
     - docker
     - firefox
     - google-chrome
     - slack
+    - vlc
