@@ -3,3 +3,4 @@ atom_packages:
   - file-icons
   - language-ansible
   - language-docker
+  - language-groovy
