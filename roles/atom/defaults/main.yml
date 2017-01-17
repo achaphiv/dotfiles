@@ -1,0 +1,5 @@
+atom_packages:
+  - editorconfig
+  - file-icons
+  - language-ansible
+  - language-docker
