@@ -43,6 +43,7 @@
   with_items:
     - fish
     - unp
+    - youtube-dl
 
 - name: Common packages (Mac)
   homebrew_cask:
