@@ -44,6 +44,7 @@
     - fish
     - unp
     - youtube-dl
+    - libav
 
 - name: Common packages (Mac)
   homebrew_cask:
