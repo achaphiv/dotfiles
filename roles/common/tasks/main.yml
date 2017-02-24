@@ -42,6 +42,7 @@
   when: ansible_os_family == 'Darwin'
   with_items:
     - fish
+    - jq
     - unp
     - youtube-dl
     - libav
