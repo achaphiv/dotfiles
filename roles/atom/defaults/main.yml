@@ -4,3 +4,4 @@ atom_packages:
   - language-ansible
   - language-docker
   - language-groovy
+  - pretty-json
