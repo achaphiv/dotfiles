@@ -3,19 +3,15 @@
 APPS=$HOME/.local/opt
 
 #export ANT_HOME=$APPS/apache-ant/
-export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-amd64/
+#export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-amd64/
 #export JAVA_HOME=$APPS/openjdk1.7/
 #export _JAVA_OPTIONS="-Dawt.useSystemAAFontSettings=on -Dswing.aatext=true"
 #export _JAVA_OPTIONS="-Xmx4g -XX:MaxPermSize=1g"
 
 #export ANDROID_HOME=$APPS/android-sdks/
-export M2_HOME=$APPS/apache-maven/
-export MAVEN_OPTS="-Xmx4g"
 
 export PATH=$(paste -d ":" -s - << EOF
 $HOME/.local/bin/
-$M2_HOME/bin/
-$JAVA_HOME/bin/
 $PATH
 EOF
 )
