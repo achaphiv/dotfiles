@@ -12,7 +12,7 @@ export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-amd64/
 export M2_HOME=$APPS/apache-maven/
 export MAVEN_OPTS="-Xmx4g"
 
-export PATH=$(paste -d ":" -s << EOF
+export PATH=$(paste -d ":" -s - << EOF
 $HOME/.local/bin/
 $M2_HOME/bin/
 $JAVA_HOME/bin/
