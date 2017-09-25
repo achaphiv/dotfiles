@@ -59,6 +59,6 @@
     - docker
     - firefox
     - google-chrome
-    - java
+    - java8
     - slack
     - vlc
