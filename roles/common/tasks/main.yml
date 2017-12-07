@@ -44,6 +44,7 @@
     - fish
     - httpie
     - jq
+    - nano
     - unp
     - youtube-dl
     - libav
