@@ -1,0 +1,2 @@
+bind M-B prevword main
+bind M-F nextword main
