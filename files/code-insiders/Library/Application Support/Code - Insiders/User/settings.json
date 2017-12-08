@@ -1,0 +1,56 @@
+{
+  "workbench.editor.enablePreviewFromQuickOpen": false,
+  "editor.fontSize": 12,
+  "workbench.colorTheme": "Monokai",
+  "editor.renderWhitespace": "boundary",
+  "editor.rulers": [80],
+  "diffEditor.ignoreTrimWhitespace": false,
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/**": true,
+    "**/target/**": true
+  },
+  "search.exclude": {
+    "**/.classpath": true,
+    "**/.idea": true,
+    "**/.settings": true,
+    "**/node_modules": true,
+    "**/bower_components": true,
+    "**/target": true,
+    "**/target-eclipse": true
+  },
+  "prettier.eslintIntegration": true,
+  "eslint.run": "onSave",
+  "editor.minimap.enabled": false,
+  "window.zoomLevel": 0,
+  "workbench.panel.location": "bottom",
+  "java.jdt.ls.vmargs": "-noverify -Xmx3G -XX:+UseG1GC -XX:+UseStringDeduplication",
+  "java.referencesCodeLens.enabled": true,
+  "java.implementationsCodeLens.enabled": true,
+  "editor.multiCursorModifier": "alt",
+  "terminal.integrated.fontFamily": "",
+  "terminal.integrated.fontSize": 13,
+  "workbench.colorCustomizations": {
+    "terminal.background": "#1D1D1D",
+    "terminal.foreground": "#F7F7F7",
+
+    "terminal.ansiBlack": "#000000",
+    "terminal.ansiRed": "#C75646",
+    "terminal.ansiGreen": "#8EB33B",
+    "terminal.ansiYellow": "#c4a000",
+    "terminal.ansiBlue": "#72B3CC",
+    "terminal.ansiMagenta": "#C8A0D1",
+    "terminal.ansiCyan": "#218693",
+    "terminal.ansiWhite": "#B0B0B0",
+
+    "terminal.ansiBrightBlack": "#5D5D5D",
+    "terminal.ansiBrightRed": "#E09690",
+    "terminal.ansiBrightGreen": "#CDEE69",
+    "terminal.ansiBrightYellow": "#FFE377",
+    "terminal.ansiBrightBlue": "#9CD9F0",
+    "terminal.ansiBrightMagenta": "#FBB1F9",
+    "terminal.ansiBrightCyan": "#77DFD8",
+    "terminal.ansiBrightWhite": "#F7F7F7"
+  }
+}
