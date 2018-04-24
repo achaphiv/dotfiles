@@ -2,7 +2,11 @@
   connection: local
   vars:
     ansible_python_interpreter: "/usr/bin/env python"
+    homebrew_taps:
+      - caskroom/cask
+      - caskroom/versions
   roles:
+    - geerlingguy.homebrew
     - common
     - dotfiles
     - atom
