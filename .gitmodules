@@ -1,0 +1,6 @@
+[submodule "roles/elliotweiser.osx-command-line-tools"]
+	path = roles/elliotweiser.osx-command-line-tools
+	url = https://github.com/elliotweiser/ansible-osx-command-line-tools
+[submodule "roles/geerlingguy.homebrew"]
+	path = roles/geerlingguy.homebrew
+	url = https://github.com/geerlingguy/ansible-role-homebrew
