@@ -3,3 +3,5 @@
 	email = achaphiv@gmail.com
 [push]
 	default = simple
+[core]
+	editor = nano
