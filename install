@@ -3,11 +3,11 @@
 set -exo pipefail
 
 install_virtualenv() {
-  pip || sudo easy_install pip
+  which pip || sudo easy_install pip
   sudo pip install virtualenv
 }
 
-virtualenv || install_virtualenv
+which virtualenv || install_virtualenv
 virtualenv venv
 source venv/bin/activate
 which ansible-playbook || pip install ansible
