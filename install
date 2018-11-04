@@ -7,9 +7,14 @@ main() {
 }
 
 run_ansible_playbook() {
-  python3 -m pip install --user pipenv
+  pip3 || install_pip3
+  pip3 install --user pipenv
   python3 -m pipenv install --dev
   python3 -m pipenv run ansible-playbook "$@"
+}
+
+install_pip3() {
+  which apt-get && sudo apt-get install python3-pip
 }
 
 main
