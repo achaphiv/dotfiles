@@ -2,13 +2,14 @@
 
 set -exo pipefail
 
-install_virtualenv() {
-  which pip || sudo easy_install pip
-  sudo pip install virtualenv
+main() {
+  run_ansible_playbook -vv site.yml --ask-become-pass
 }
 
-which virtualenv || install_virtualenv
-virtualenv venv
-source venv/bin/activate
-which ansible-playbook || pip install ansible
-ansible-playbook -vv site.yml --ask-become-pass
+run_ansible_playbook() {
+  python3 -m pip install --user pipenv
+  python3 -m pipenv install --dev
+  python3 -m pipenv run ansible-playbook "$@"
+}
+
+main
