@@ -5,3 +5,5 @@
 	default = simple
 [core]
 	editor = nano
+	ignorecase = false
+	eol = lf
