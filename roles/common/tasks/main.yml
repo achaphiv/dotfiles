@@ -45,6 +45,7 @@
     - httpie
     - jq
     - nano
+    - terraform
     - the_silver_searcher
     - unp
     - youtube-dl
