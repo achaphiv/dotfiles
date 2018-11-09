@@ -59,7 +59,8 @@
     - android-file-transfer
     - atom
     - docker
-    - eclipse-java
+    # Really outdated
+    # - eclipse-java
     - firefox
     - fork
     - google-chrome
