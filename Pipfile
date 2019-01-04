@@ -5,3 +5,6 @@ name = "pypi"
 
 [dev-packages]
 ansible = "*"
+
+[pipenv]
+allow_prereleases = true
