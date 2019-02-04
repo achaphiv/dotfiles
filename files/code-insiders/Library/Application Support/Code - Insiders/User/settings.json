@@ -9,6 +9,7 @@
   "explorer.confirmDragAndDrop": false,
   "explorer.confirmDelete": false,
   "explorer.openEditors.visible": 0,
+  "files.useExperimentalFileWatcher": true,
   "files.watcherExclude": {
     "**/.git/objects/**": true,
     "**/.git/subtree-cache/**": true,
@@ -59,8 +60,6 @@
     "terminal.ansiBrightCyan": "#77DFD8",
     "terminal.ansiBrightWhite": "#F7F7F7"
   },
-
-  "eslint.run": "onSave",
   "eslint.packageManager": "yarn",
   "eslint.validate": [
     "javascript",
@@ -76,14 +75,12 @@
   "java.referencesCodeLens.enabled": true,
   "java.implementationsCodeLens.enabled": true,
 
-  "vetur.format.defaultFormatter.html": "js-beautify-html",
-  "vetur.format.defaultFormatterOptions": {
-    "js-beautify-html": {
-      "wrap_attributes": "force-expand-multiline"
-    }
-  },
   "eslint.autoFixOnSave": true,
 
   "shellformat.flag": "-i 2",
-  "window.zoomLevel": 0
+  "window.zoomLevel": 0,
+  "workbench.startupEditor": "newUntitledFile",
+  "editor.autoClosingQuotes": "never",
+  "workbench.list.openMode": "doubleClick",
+  "eslint.run": "onSave"
 }
