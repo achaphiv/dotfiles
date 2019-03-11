@@ -1,8 +1,0 @@
-atom_packages:
-  - editorconfig
-  - file-icons
-  - language-ansible
-  - language-docker
-  - language-groovy
-  - language-ini
-  - pretty-json
