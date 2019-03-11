@@ -45,9 +45,11 @@
     - httpie
     - jq
     - nano
+    - node
     - terraform
     - the_silver_searcher
     - unp
+    - yarn
     - youtube-dl
     - libav
 
