@@ -58,14 +58,30 @@
   when: ansible_os_family == 'Darwin'
   with_items:
     - android-file-transfer
-    - atom
     - docker
-    # Really outdated
-    # - eclipse-java
     - firefox
+    - font-anonymouspro-nerd-font-mono
+    - font-aurulentsansmono-nerd-font-mono
+    - font-dejavusansmono-nerd-font-mono
+    - font-droidsansmono-nerd-font-mono
+    - font-fira-mono
+    - font-hack-nerd-font-mono
+    - font-inconsolata-nerd-font-mono
+    - font-input
+    - font-merriweather
+    - font-merriweather-sans
+    - font-monoid-nerd-font-mono
+    - font-mononoki-nerd-font-mono
+    - font-robotomono-nerd-font-mono
+    - font-sourcecodepro-nerd-font-mono
     - fork
+    - gimp
     - google-chrome
+    - intellij-idea-ce
     - java8
+    - microsoft-teams
+    - postman
+    - skype-for-business
     - slack
     - visual-studio-code-insiders
     - vlc
