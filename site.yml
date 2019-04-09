@@ -3,8 +3,8 @@
   vars:
     ansible_python_interpreter: "/usr/bin/env python"
     homebrew_taps:
-      - caskroom/cask
-      - caskroom/versions
+      - homebrew/cask
+      - homebrew/cask-versions
   roles:
     - geerlingguy.homebrew
     - common
