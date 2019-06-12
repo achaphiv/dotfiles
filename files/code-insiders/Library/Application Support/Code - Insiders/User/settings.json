@@ -5,11 +5,12 @@
   "editor.minimap.enabled": false,
   "editor.renderWhitespace": "boundary",
   "editor.rulers": [80],
+  "editor.autoClosingQuotes": "never",
 
-  "explorer.confirmDragAndDrop": false,
   "explorer.confirmDelete": false,
+  "explorer.confirmDragAndDrop": false,
   "explorer.openEditors.visible": 0,
-  "files.useExperimentalFileWatcher": true,
+
   "files.watcherExclude": {
     "**/.git/objects/**": true,
     "**/.git/subtree-cache/**": true,
@@ -39,7 +40,6 @@
   "terminal.integrated.fontSize": 13,
 
   "workbench.colorTheme": "Monokai",
-  "workbench.editor.enablePreviewFromQuickOpen": false,
   "workbench.colorCustomizations": {
     "terminal.background": "#1D1D1D",
     "terminal.foreground": "#F7F7F7",
@@ -60,7 +60,14 @@
     "terminal.ansiBrightCyan": "#77DFD8",
     "terminal.ansiBrightWhite": "#F7F7F7"
   },
+  "workbench.editor.enablePreviewFromQuickOpen": false,
+  "workbench.list.openMode": "doubleClick",
+  "workbench.startupEditor": "newUntitledFile",
+
+  "eslint.alwaysShowStatus": true,
+  "eslint.autoFixOnSave": true,
   "eslint.packageManager": "yarn",
+  "eslint.run": "onSave",
   "eslint.validate": [
     "javascript",
     "javascriptreact",
@@ -75,12 +82,25 @@
   "java.referencesCodeLens.enabled": true,
   "java.implementationsCodeLens.enabled": true,
 
-  "eslint.autoFixOnSave": true,
-
   "shellformat.flag": "-i 2",
   "window.zoomLevel": 0,
-  "workbench.startupEditor": "newUntitledFile",
-  "editor.autoClosingQuotes": "never",
-  "workbench.list.openMode": "doubleClick",
-  "eslint.run": "onSave"
+
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  "prettier.eslintIntegration": true,
+  "vetur.format.defaultFormatter.html": "prettier",
+
+  "jest.debugMode": true,
+  "jest.runAllTestsFirst": false
 }
