@@ -84,6 +84,7 @@
       - vlc
       - vox
       - vox-preferences-pane
+      - vscodium
     state: present
   when: ansible_os_family == 'Darwin'
 
