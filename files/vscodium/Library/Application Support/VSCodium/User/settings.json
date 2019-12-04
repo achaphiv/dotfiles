@@ -1,0 +1,27 @@
+{
+    "editor.fontSize": 13,
+    "explorer.openEditors.visible": 0,
+    "window.zoomLevel": 0,
+    "workbench.colorTheme": "Monokai",
+    "workbench.editor.enablePreview": false,
+    "terraform.indexing": {
+        "enabled": false,
+        "liveIndexing": false,
+        "delay": 500,
+        "exclude": [
+            ".terraform/**/*",
+            "**/.terraform/**/*"
+        ]
+    },
+    "terraform.languageServer": {
+        "enabled": true,
+        "args": []
+    },
+    "[vue]": {
+        "editor.defaultFormatter": "octref.vetur"
+    },
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "workbench.startupEditor": "newUntitledFile"
+}
