@@ -59,6 +59,7 @@
     state: present
   when: ansible_os_family == 'Darwin'
   with_items:
+    - adoptopenjdk8
     - android-file-transfer
     - docker
     - firefox
@@ -80,7 +81,6 @@
     - gimp
     - google-chrome
     - intellij-idea-ce
-    - java8
     - microsoft-teams
     - postman
     - skype-for-business
