@@ -7,5 +7,7 @@
       - homebrew/cask-versions
   roles:
     - geerlingguy.homebrew
+    - role: geerlingguy.nodejs
+      become: yes
     - common
     - dotfiles
