@@ -4,3 +4,6 @@
 [submodule "roles/geerlingguy.homebrew"]
 	path = roles/geerlingguy.homebrew
 	url = https://github.com/geerlingguy/ansible-role-homebrew
+[submodule "roles/geerlingguy.nodejs"]
+	path = roles/geerlingguy.nodejs
+	url = https://github.com/geerlingguy/ansible-role-nodejs
