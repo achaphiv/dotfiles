@@ -1,5 +1,6 @@
 {
     "editor.fontSize": 13,
+    "editor.rulers": [80,100],
     "explorer.openEditors.visible": 0,
     "window.zoomLevel": 0,
     "workbench.colorTheme": "Monokai",
@@ -16,12 +17,6 @@
     "terraform.languageServer": {
         "enabled": true,
         "args": []
-    },
-    "[vue]": {
-        "editor.defaultFormatter": "octref.vetur"
-    },
-    "[javascript]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "workbench.startupEditor": "newUntitledFile"
 }
