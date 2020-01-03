@@ -40,6 +40,11 @@
     state: present
   become: yes
 
+- name: Install VSCodium
+  apt:
+    deb: https://github.com/VSCodium/vscodium/releases/download/1.41.1/codium_1.41.1-1576787344_amd64.deb
+  become: yes
+
 - name: Install nodejs
   include_role:
     name: geerlingguy.nodejs
