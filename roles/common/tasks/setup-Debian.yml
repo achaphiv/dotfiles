@@ -1,0 +1,33 @@
+- name: PPA repositories
+  apt_repository:
+    repo: "{{ item }}"
+    state: present
+  with_items:
+    - "ppa:no1wantdthisname/ppa"
+    - "ppa:rvm/smplayer"
+    - "ppa:webupd8team/atom"
+    - "deb https://apt.dockerproject.org/repo ubuntu-{{ ansible_distribution_release }} main"
+  become: yes
+
+- name: Common packages
+  apt:
+    name:
+      - atom
+      - fish
+      - chromium-browser
+      - deluge-gtk
+      - smplayer
+      - git
+      - p7zip
+      - gitg
+      - mpv
+      - docker-engine
+      - docker-compose
+      - unp
+      # FIXME: missing tzdata package
+      # - openjdk-7-source
+      # - openjdk-7-jdk
+      - openjdk-8-source
+      - openjdk-8-jdk
+    state: present
+  become: yes
