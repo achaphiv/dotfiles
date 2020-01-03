@@ -2,11 +2,13 @@
   connection: local
   vars:
     ansible_python_interpreter: "/usr/bin/env python"
-    homebrew_taps:
-      - homebrew/cask
-      - homebrew/cask-versions
   roles:
-    - geerlingguy.homebrew
+    - role: geerlingguy.homebrew
+      vars:
+        homebrew_taps:
+          - homebrew/cask
+          - homebrew/cask-versions
+      when: "ansible_os_family == 'Darwin'"
     - role: geerlingguy.nodejs
       become: yes
     - common
