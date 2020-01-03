@@ -3,13 +3,5 @@
   vars:
     ansible_python_interpreter: "/usr/bin/env python"
   roles:
-    - role: geerlingguy.homebrew
-      vars:
-        homebrew_taps:
-          - homebrew/cask
-          - homebrew/cask-versions
-      when: "ansible_os_family == 'Darwin'"
-    - role: geerlingguy.nodejs
-      become: yes
     - common
     - dotfiles

@@ -1,3 +1,11 @@
+- name: Install homebrew
+  include_role:
+    name: geerlingguy.homebrew
+  vars:
+    homebrew_taps:
+      - homebrew/cask
+      - homebrew/cask-versions
+
 - name: Common packages (Mac)
   homebrew:
     name:

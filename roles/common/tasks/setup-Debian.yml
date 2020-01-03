@@ -40,3 +40,9 @@
       - openjdk-8-jdk
     state: present
   become: yes
+
+- name: Install nodejs
+  include_role:
+    name: geerlingguy.nodejs
+  vars:
+    ansible_become: yes
