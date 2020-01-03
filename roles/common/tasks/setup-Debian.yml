@@ -1,4 +1,12 @@
-- name: PPA repositories
+- name: GPG public keys
+  apt_key:
+    url: "{{ item }}"
+    state: present
+  with_items:
+    - "https://download.docker.com/linux/ubuntu/gpg"
+  become: yes
+
+- name: APT repositories
   apt_repository:
     repo: "{{ item }}"
     state: present
@@ -6,7 +14,7 @@
     - "ppa:no1wantdthisname/ppa"
     - "ppa:rvm/smplayer"
     - "ppa:webupd8team/atom"
-    - "deb https://apt.dockerproject.org/repo ubuntu-{{ ansible_distribution_release }} main"
+    - "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
   become: yes
 
 - name: Common packages
