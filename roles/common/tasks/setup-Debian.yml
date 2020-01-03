@@ -21,7 +21,6 @@
 - name: Common packages
   apt:
     name:
-      - atom
       - fish
       - chromium-browser
       - deluge-gtk
