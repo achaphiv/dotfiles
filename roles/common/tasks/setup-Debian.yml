@@ -29,6 +29,7 @@
       - p7zip
       - gitg
       - mpv
+      - terminator
       - docker-engine
       - docker-compose
       - unp
