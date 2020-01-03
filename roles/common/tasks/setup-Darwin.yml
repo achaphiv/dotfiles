@@ -1,0 +1,51 @@
+- name: Common packages (Mac)
+  homebrew:
+    name:
+      - fish
+      - httpie
+      - jq
+      - nano
+      - node
+      - terraform
+      - the_silver_searcher
+      - unp
+      - yarn
+      - youtube-dl
+      - libav
+    state: present
+
+- name: Common packages (Mac)
+  homebrew_cask:
+    name:
+      - adoptopenjdk8
+      - android-file-transfer
+      - docker
+      - firefox
+      - font-anonymouspro-nerd-font-mono
+      - font-aurulentsansmono-nerd-font-mono
+      - font-dejavusansmono-nerd-font-mono
+      - font-droidsansmono-nerd-font-mono
+      - font-fira-mono
+      - font-hack-nerd-font-mono
+      - font-inconsolata-nerd-font-mono
+      - font-input
+      - font-merriweather
+      - font-merriweather-sans
+      - font-monoid-nerd-font-mono
+      - font-mononoki-nerd-font-mono
+      - font-robotomono-nerd-font-mono
+      - font-sourcecodepro-nerd-font-mono
+      - fork
+      - gimp
+      - google-chrome
+      - intellij-idea-ce
+      - microsoft-teams
+      - postman
+      - skype-for-business
+      - slack
+      - visual-studio-code-insiders
+      - vlc
+      - vox
+      - vox-preferences-pane
+      - vscodium
+    state: present
