@@ -1,9 +1,6 @@
 # Mac
 .DS_Store
 
-# Python virtualenv
-venv/
-
 # Application data files
 files/maven/.m2/repository/
 files/maven/.m2/wrapper/
