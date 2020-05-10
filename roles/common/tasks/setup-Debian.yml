@@ -4,6 +4,7 @@
     state: present
   with_items:
     - "https://download.docker.com/linux/ubuntu/gpg"
+    - "https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg"
   become: yes
 
 - name: APT repositories
@@ -16,6 +17,7 @@
     - "ppa:webupd8team/atom"
     - "ppa:fish-shell/release-3"
     - "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+    - "deb https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/repos/debs/ vscodium main"
   become: yes
 
 - name: Common packages
@@ -38,12 +40,8 @@
       # - openjdk-7-jdk
       - openjdk-8-source
       - openjdk-8-jdk
+      - codium
     state: present
-  become: yes
-
-- name: Install VSCodium
-  apt:
-    deb: https://github.com/VSCodium/vscodium/releases/download/1.41.1/codium_1.41.1-1576787344_amd64.deb
   become: yes
 
 - name: Install nodejs
