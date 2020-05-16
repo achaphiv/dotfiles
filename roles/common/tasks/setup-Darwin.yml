@@ -5,6 +5,7 @@
     homebrew_taps:
       - homebrew/cask
       - homebrew/cask-versions
+      - homebrew/drivers
 
 - name: Common packages (Mac)
   homebrew:
@@ -29,6 +30,7 @@
       - android-file-transfer
       - docker
       - firefox
+      - focusrite-control
       - font-anonymouspro-nerd-font-mono
       - font-aurulentsansmono-nerd-font-mono
       - font-dejavusansmono-nerd-font-mono
