@@ -4,8 +4,8 @@
   vars:
     homebrew_taps:
       - homebrew/cask
-      - homebrew/cask-versions
-      - homebrew/drivers
+      - homebrew/cask-drivers
+      - adoptopenjdk/openjdk
 
 - name: Common packages (Mac)
   homebrew:
