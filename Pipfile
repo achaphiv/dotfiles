@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [dev-packages]
-ansible = "*"
+ansible = "~=2.9.0"
 
 [pipenv]
 allow_prereleases = true
