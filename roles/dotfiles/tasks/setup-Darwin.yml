@@ -1,0 +1,4 @@
+- name: Stow (Mac)
+  homebrew:
+    name: stow
+    state: present
