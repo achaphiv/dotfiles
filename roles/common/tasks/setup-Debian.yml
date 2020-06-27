@@ -31,7 +31,7 @@
       - gitg
       - mpv
       - terminator
-      - docker-engine
+      - docker-ce
       - docker-compose
       - unp
       # FIXME: missing tzdata package
