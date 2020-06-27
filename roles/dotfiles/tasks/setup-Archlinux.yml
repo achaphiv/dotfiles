@@ -1,0 +1,6 @@
+- name: Install
+  pacman:
+    name:
+      - stow
+    state: present
+  become: yes
