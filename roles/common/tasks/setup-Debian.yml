@@ -29,6 +29,7 @@
       - git
       - p7zip
       - gitg
+      - lm-sensors
       - mpv
       - terminator
       - docker-ce
