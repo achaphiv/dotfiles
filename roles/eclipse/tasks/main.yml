@@ -1,0 +1,29 @@
+- name: Parent dir
+  file:
+    path: "{{ destination_parent_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Parent dir
+  file:
+    path: "{{ destination_unpacked }}"
+    state: directory
+    mode: '0755'
+
+- name: Download
+  get_url:
+    url: "{{ source_url }}"
+    dest: "{{ destination_archive }}"
+    checksum: "{{ source_checksum }}"
+    mode: "0644"
+
+- name: Extract
+  unarchive:
+    src: "{{ destination_archive }}"
+    dest: "{{ destination_unpacked }}"
+
+- name: Create a symbolic link
+  file:
+    src: "{{ destination_unpacked }}/eclipse"
+    dest: "{{ destination_link }}"
+    state: link
