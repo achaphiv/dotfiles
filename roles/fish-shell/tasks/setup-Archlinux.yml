@@ -1,0 +1,6 @@
+- name: Common packages
+  pacman:
+    name:
+      - fish
+    state: present
+  become: yes
