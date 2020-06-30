@@ -10,7 +10,6 @@
 - name: Common packages (Mac)
   homebrew:
     name:
-      - fish
       - httpie
       - jq
       - nano
