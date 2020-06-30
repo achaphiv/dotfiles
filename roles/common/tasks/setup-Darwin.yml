@@ -15,7 +15,6 @@
       - jq
       - nano
       - node
-      - tfswitch
       - the_silver_searcher
       - unp
       - yarn
