@@ -1,0 +1,4 @@
+- name: Install
+  aur:
+    name: tfswitch-bin
+    state: present
