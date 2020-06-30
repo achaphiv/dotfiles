@@ -1,0 +1,21 @@
+- name: Common packages
+  pacman:
+    name:
+      - git
+      - p7zip
+      - gitg
+      - mpv
+      - terminator
+      - docker
+      - docker-compose
+      - unp
+      - yay
+      - jdk11-openjdk
+    state: present
+  become: yes
+
+- name: Install nodejs
+  include_role:
+    name: geerlingguy.nodejs
+  vars:
+    ansible_become: yes
