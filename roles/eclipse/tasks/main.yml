@@ -21,6 +21,7 @@
   unarchive:
     src: "{{ destination_archive }}"
     dest: "{{ destination_unpacked }}"
+    creates: "{{ destination_unpacked }}/eclipse"
 
 - name: Create a symbolic link
   file:
