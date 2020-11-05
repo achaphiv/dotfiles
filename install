@@ -15,6 +15,7 @@ run_ansible_playbook() {
 
 install_pip3() {
   which apt-get && sudo apt-get install python3-pip
+  which pacman && sudo pacman -Syu python-pip
 }
 
 main
