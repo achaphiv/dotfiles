@@ -1,7 +1,8 @@
-filename_no_extension: eclipse-java-2020-06-R-linux-gtk-x86_64
+package_version: 2020-06
+filename_no_extension: "eclipse-java-{{ package_version }}-R-linux-gtk-x86_64"
 filename_yes_extension: "{{ filename_no_extension }}.tar.gz"
 
-source_url: "http://mirror.umd.edu/eclipse/technology/epp/downloads/release/2020-06/R/{{ filename_yes_extension }}"
+source_url: "http://mirror.umd.edu/eclipse/technology/epp/downloads/release/{{ package_version }}/R/{{ filename_yes_extension }}"
 source_checksum: "sha256:dc52b7486715cf13aa2642b7e96fc7d2ea1d0544c070110dd52b2644ec869e76"
 
 destination_parent_dir: "{{ lookup('env','HOME') }}/.local/opt"
