@@ -28,3 +28,9 @@
     src: "{{ destination_unpacked }}/eclipse"
     dest: "{{ destination_link }}"
     state: link
+
+- name: Configuration
+  lineinfile:
+    path: "{{ destination_unpacked }}/eclipse/eclipse.ini"
+    regexp: '^-Xmx'
+    line: "-Xmx4g"
