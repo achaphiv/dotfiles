@@ -1,3 +1,10 @@
+- name: Base packages for strip and friends
+  pacman:
+    name:
+      - base-devel
+    state: present
+  become: yes
+
 - name: Install
   aur:
     name: tfswitch-bin
