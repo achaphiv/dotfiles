@@ -1,0 +1,11 @@
+.include /etc/pulse/default.pa
+
+# Turn off HDMI
+.nofail
+set-card-profile alsa_card.pci-0000_03_00.1 off
+
+load-module module-echo-cancel use_master_format=1 aec_method=webrtc aec_args="analog_gain_control=0 digital_gain_control=1" source_name=echo_source sink_name=echo_sink
+
+set-default-source echo_source
+set-default-sink echo_sink
+
