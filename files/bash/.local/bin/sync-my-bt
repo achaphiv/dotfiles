@@ -1,0 +1,14 @@
+#!/bin/sh
+
+limit=${1:-3000}
+flock \
+  -n ~/tmp/sync \
+  rsync \
+    --delete \
+    --progress \
+    -vvrt \
+    --bwlimit=${limit} \
+    --backup \
+    --backup-dir=$HOME/Downloads/bt-done/ \
+    bt:.bt/files/ \
+    ~/Downloads/bt-remote/
