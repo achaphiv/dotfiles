@@ -1,6 +1,7 @@
 - name: Common packages
   pacman:
     name:
+      - chromium
       - code
       - git
       - p7zip
