@@ -1,0 +1,7 @@
+- name: Install packages
+  pacman:
+    name:
+      # Necessary for emoji
+      - noto-fonts-emoji
+    state: present
+  become: yes
