@@ -7,3 +7,5 @@
 	editor = nano
 	ignorecase = false
 	eol = lf
+[pull]
+	rebase = true
