@@ -1,0 +1,35 @@
+{
+  "editor.fontFamily": "'Consolas', 'monospace'",
+  "terminal.integrated.fontFamily": "'Noto Mono', 'monospace'",
+  "editor.rulers": [80, 100],
+  "explorer.openEditors.visible": 0,
+  "window.zoomLevel": 0,
+  "workbench.colorTheme": "Monokai",
+  "workbench.editor.enablePreview": false,
+  "terraform.indexing": {
+    "enabled": false,
+    "liveIndexing": false,
+    "delay": 500,
+    "exclude": [".terraform/**/*", "**/.terraform/**/*"]
+  },
+  "terraform.languageServer": {
+    "external": true,
+    "args": ["serve"]
+  },
+  "workbench.startupEditor": "newUntitledFile",
+  "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx1G -Xms100m -javaagent:\"/home/alex/.vscode-oss/extensions/gabrielbb.vscode-lombok-1.0.1/server/lombok.jar\"",
+  "explorer.confirmDragAndDrop": false,
+  "java.semanticHighlighting.enabled": true,
+  "java.configuration.checkProjectSettingsExclusions": false,
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "editor.suggestSelection": "first",
+  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+  "timeline.excludeSources": ["git-history"],
+  "java.project.importOnFirstTimeStartup": "automatic",
+  "python.languageServer": "Microsoft",
+  "vue-component-importer.enableDebugMessages": true,
+  "vue-helper.componentPrefix": {
+    "alias": "@",
+    "path": "^"
+  }
+}
