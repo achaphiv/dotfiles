@@ -23,6 +23,12 @@
     dest: "{{ destination_unpacked }}"
     creates: "{{ destination_unpacked }}/eclipse"
 
+- name: Memory settings
+  lineinfile:
+    path: "{{ destination_unpacked }}/eclipse/eclipse.ini"
+    regexp: "^-Xmx"
+    line: "-Xmx8g"
+
 - name: Create a symbolic link
   file:
     src: "{{ destination_unpacked }}/eclipse"
