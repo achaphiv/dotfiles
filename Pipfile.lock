@@ -17,10 +17,10 @@
     "develop": {
         "ansible": {
             "hashes": [
-                "sha256:49a4139a4315282c0588f1691b450ebc8309772c149f6cf342d2039bc3a48b6f"
+                "sha256:b7ca0fac00dd09e11bf69eb40da1405881b466ad2adb88e7aee3e2387e66f9ad"
             ],
             "index": "pypi",
-            "version": "==2.9.22"
+            "version": "==2.9.23"
         },
         "cffi": {
             "hashes": [
