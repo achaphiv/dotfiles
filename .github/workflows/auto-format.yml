@@ -23,9 +23,11 @@ jobs:
       - name: Auto format (prettier)
         run: |
           git ls-files '**.yml' '**.yaml' '**.json' '**.md' '**.xml' -z | xargs -0 yarn run prettier --write
+      # Cannot modify .github/workflows (refusing to allow a GitHub App to create or update workflow)
       - name: Commit changes (prettier)
         run: |
           git add -u
+          git reset .github/workflows
           git commit -m 'style: `prettier --write`' || true
       - name: Push changes
         run: |
