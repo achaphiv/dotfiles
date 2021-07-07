@@ -22,7 +22,7 @@ jobs:
           git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
       - name: Auto format (prettier)
         run: |
-          yarn run prettier --write $(git ls-files '**.yml' '**.yaml' '**.json' '**.md' '**.xml')
+          git ls-files '**.yml' '**.yaml' '**.json' '**.md' '**.xml' -z | xargs -0 yarn run prettier --write
       - name: Commit changes (prettier)
         run: |
           git add -u
