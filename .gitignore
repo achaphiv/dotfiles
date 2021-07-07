@@ -7,3 +7,12 @@ files/maven/.m2/wrapper/
 
 # Ansible
 *.retry
+
+# node
+node_modules
+
+# npm (use yarn instead)
+package-lock.json
+
+# yarn
+yarn-error.log
