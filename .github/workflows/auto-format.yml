@@ -1,0 +1,32 @@
+name: Auto format
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1.4.4
+        with:
+          node-version: "14.x"
+      - name: Install dependencies
+        run: yarn install
+      - name: Configure git
+        run: |
+          git config --global user.name "${GITHUB_ACTOR}"
+          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+      - name: Auto format (prettier)
+        run: |
+          yarn run prettier --write $(git ls-files '**.yml' '**.yaml' '**.json' '**.md' '**.xml')
+      - name: Commit changes (prettier)
+        run: |
+          git add -u
+          git commit -m 'style: `prettier --write`' || true
+      - name: Push changes
+        run: |
+          git push
