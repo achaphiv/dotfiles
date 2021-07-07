@@ -9,3 +9,6 @@
 	eol = lf
 [pull]
 	rebase = true
+
+[include]
+    path = ~/.gitconfig.work
