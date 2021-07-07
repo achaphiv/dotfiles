@@ -1,42 +1,42 @@
 - name: Parent dir
   file:
-    path: "{{ destination_parent_dir }}"
+    path: '{{ destination_parent_dir }}'
     state: directory
     mode: '0755'
 
 - name: Parent dir
   file:
-    path: "{{ destination_unpacked }}"
+    path: '{{ destination_unpacked }}'
     state: directory
     mode: '0755'
 
 - name: Download
   get_url:
-    url: "{{ source_url }}"
-    dest: "{{ destination_archive }}"
-    checksum: "{{ source_checksum }}"
-    mode: "0644"
+    url: '{{ source_url }}'
+    dest: '{{ destination_archive }}'
+    checksum: '{{ source_checksum }}'
+    mode: '0644'
 
 - name: Extract
   unarchive:
-    src: "{{ destination_archive }}"
-    dest: "{{ destination_unpacked }}"
-    creates: "{{ destination_unpacked }}/eclipse"
+    src: '{{ destination_archive }}'
+    dest: '{{ destination_unpacked }}'
+    creates: '{{ destination_unpacked }}/eclipse'
 
 - name: Memory settings
   lineinfile:
-    path: "{{ destination_unpacked }}/eclipse/eclipse.ini"
-    regexp: "^-Xmx"
-    line: "-Xmx8g"
+    path: '{{ destination_unpacked }}/eclipse/eclipse.ini'
+    regexp: '^-Xmx'
+    line: '-Xmx8g'
 
 - name: Create a symbolic link
   file:
-    src: "{{ destination_unpacked }}/eclipse"
-    dest: "{{ destination_link }}"
+    src: '{{ destination_unpacked }}/eclipse'
+    dest: '{{ destination_link }}'
     state: link
 
 - name: Configuration
   lineinfile:
-    path: "{{ destination_unpacked }}/eclipse/eclipse.ini"
+    path: '{{ destination_unpacked }}/eclipse/eclipse.ini'
     regexp: '^-Xmx'
-    line: "-Xmx4g"
+    line: '-Xmx4g'

@@ -1,9 +1,9 @@
 - name: APT repositories
   apt_repository:
-    repo: "{{ item }}"
+    repo: '{{ item }}'
     state: present
   with_items:
-    - "ppa:fish-shell/release-3"
+    - 'ppa:fish-shell/release-3'
   become: yes
 
 - name: install
