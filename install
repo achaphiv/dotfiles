@@ -2,4 +2,4 @@
 
 set -exo pipefail
 
-./bin/run-ansible-playbook -vv ansible/site.yml --ask-become-pass
+./bin/local-pipenv run ansible-playbook -vv ansible/site.yml --ask-become-pass
