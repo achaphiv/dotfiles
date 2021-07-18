@@ -4,7 +4,7 @@ mkdir -p ~/tmp
 mkdir -p ~/Downloads/bt-remote
 mkdir -p ~/Downloads/bt-done
 
-limit=${1:-3000}
+limit=${1:-10000}
 flock \
   -n ~/tmp/sync \
   rsync \
