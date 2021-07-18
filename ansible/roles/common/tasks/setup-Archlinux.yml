@@ -8,17 +8,13 @@
       - p7zip
       - gitg
       - mpv
+      - nodejs-lts-fermium
       - terminator
       - docker
       - docker-compose
       - unp
       - yay
+      - yarn
       - jdk11-openjdk
     state: present
   become: yes
-
-- name: Install nodejs
-  include_role:
-    name: geerlingguy.nodejs
-  vars:
-    ansible_become: yes
