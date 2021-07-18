@@ -1,0 +1,8 @@
+- name: Disable power saving
+  copy:
+    dest: '/etc/modprobe.d/hacks-wifi.conf'
+    content: |
+      options iwlmvm power_scheme=1
+      options iwlwifi power_save=0
+
+  become: yes
