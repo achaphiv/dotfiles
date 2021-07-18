@@ -1,2 +1,2 @@
 #!/bin/sh
-~/.local/bin/sync-my-bt 1900 &> ~/tmp/cron.sync
+~/.local/bin/sync-my-bt 8000 &> ~/tmp/cron.sync
