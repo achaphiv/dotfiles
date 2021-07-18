@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+set -exo pipefail
+
+main() {
+  install_deps
+
+  python3 -m pipenv "$@"
+}
+
+install_deps() {
+  which pip3 || install_pip3
+  pip3 install --user pipenv
+  python3 -m pipenv install --dev
+}
+
+install_pip3() {
+  install_pip3_apt || install_pip3_pacman || exit
+}
+
+install_pip3_apt() {
+  which apt-get && sudo apt-get install python3-pip
+}
+
+install_pip3_pacman() {
+  which pacman && sudo pacman -Syu python-pip
+}
+
+main "$@"
