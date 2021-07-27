@@ -5,8 +5,7 @@
     "EditorConfig.EditorConfig",
     "esbenp.prettier-vscode",
     "foxundermoon.shell-format",
-    "redhat.vscode-yaml",
-    "vscoss.vscode-ansible"
+    "redhat.vscode-yaml"
   ],
   "unwantedRecommendations": []
 }
