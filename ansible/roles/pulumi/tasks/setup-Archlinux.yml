@@ -1,0 +1,6 @@
+- name: Official
+  pacman:
+    name:
+      - pulumi
+    state: present
+  become: yes
