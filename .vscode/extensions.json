@@ -1,6 +1,5 @@
 {
   "recommendations": [
-    "coenraads.bracket-pair-colorizer",
     "DavidAnson.vscode-markdownlint",
     "EditorConfig.EditorConfig",
     "esbenp.prettier-vscode",
