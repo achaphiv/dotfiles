@@ -3,4 +3,4 @@
     name:
       - pulumi
     state: present
-  become: yes
+  become: true
