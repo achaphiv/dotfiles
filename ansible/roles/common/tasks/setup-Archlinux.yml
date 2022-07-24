@@ -9,7 +9,6 @@
   pacman:
     name:
       - chromium
-      - code
       - firefox-developer-edition
       - git
       - p7zip
