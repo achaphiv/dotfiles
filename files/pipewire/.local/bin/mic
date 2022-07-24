@@ -1,6 +1,6 @@
 #!/bin/sh
 
-sleep 1
+sleep 3
 
 pactl set-default-source noise-cancel-playback
 pactl set-default-sink echo-cancel-sink
