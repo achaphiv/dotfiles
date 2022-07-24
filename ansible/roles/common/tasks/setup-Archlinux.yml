@@ -23,11 +23,11 @@
       - yarn
       - jdk11-openjdk
     state: present
-  become: yes
+  become: true
 
 - name: Enable and/or start docker
   service:
     name: docker
     enabled: yes
     state: started
-  become: yes
+  become: true
