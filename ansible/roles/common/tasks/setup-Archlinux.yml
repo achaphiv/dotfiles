@@ -1,6 +1,13 @@
 - name: Common packages
   pacman:
     name:
+      - nodejs-lts-fermium
+    state: absent
+  become: false
+
+- name: Common packages
+  pacman:
+    name:
       - chromium
       - code
       - firefox-developer-edition
@@ -8,7 +15,7 @@
       - p7zip
       - gitg
       - mpv
-      - nodejs-lts-fermium
+      - nodejs-lts-gallium
       - terminator
       - docker
       - docker-compose
