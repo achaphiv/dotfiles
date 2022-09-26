@@ -18,6 +18,8 @@
       - terminator
       - docker
       - docker-compose
+      - keepassxc
+      - syncthing
       - unp
       - yay
       - yarn
