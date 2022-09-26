@@ -1,4 +1,6 @@
 {
+  "telemetry.telemetryLevel": "off",
+
   "editor.fontSize": 15,
   "editor.fontFamily": "'Cascadia Code','Noto Sans Mono', 'monospace', monospace",
   "editor.fontWeight": "350",
