@@ -2,9 +2,13 @@
   "telemetry.telemetryLevel": "off",
 
   "editor.fontSize": 15,
-  "editor.fontFamily": "'Cascadia Code','Noto Sans Mono', 'monospace', monospace",
+  "editor.fontFamily": "'Cascadia Code', 'Noto Sans Mono', 'monospace'",
   "editor.fontWeight": "350",
-  "terminal.integrated.fontFamily": "'Noto Mono', 'monospace'",
+
+  "terminal.integrated.fontSize": 15,
+  "terminal.integrated.fontFamily": "'Cascadia Code', 'Noto Mono', 'monospace'",
+  "terminal.integrated.fontWeight": "350",
+
   "editor.rulers": [80, 100],
   "explorer.openEditors.visible": 0,
   "window.zoomLevel": 0,
