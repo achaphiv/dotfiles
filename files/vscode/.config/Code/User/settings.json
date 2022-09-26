@@ -7,6 +7,14 @@
   "explorer.openEditors.visible": 0,
   "window.zoomLevel": 0,
   "workbench.colorTheme": "Monokai",
+  "editor.semanticHighlighting.enabled": true,
+  "editor.semanticTokenColorCustomizations": {
+    "[Monokai]": {
+      "rules": {
+        "property": "#FD971F"
+      }
+    }
+  },
   "workbench.editor.enablePreview": false,
   "terraform.indexing": {
     "enabled": false,
