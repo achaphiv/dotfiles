@@ -1,6 +1,7 @@
 {
-  "editor.fontSize": 14,
-  "editor.fontFamily": "'Noto Mono', 'monospace'",
+  "editor.fontSize": 15,
+  "editor.fontFamily": "'Cascadia Code','Noto Sans Mono', 'monospace', monospace",
+  "editor.fontWeight": "350",
   "terminal.integrated.fontFamily": "'Noto Mono', 'monospace'",
   "editor.rulers": [80, 100],
   "explorer.openEditors.visible": 0,
