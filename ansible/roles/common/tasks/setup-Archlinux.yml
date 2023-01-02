@@ -8,6 +8,7 @@
 - name: Common packages
   pacman:
     name:
+      - barrier
       - chromium
       - firefox-developer-edition
       - git
