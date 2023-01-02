@@ -20,6 +20,7 @@
       - docker
       - docker-compose
       - keepassxc
+      - nix
       - syncthing
       - unp
       - yay
