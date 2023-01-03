@@ -1,12 +1,9 @@
 [global_config]
-  title_use_system_font = False
-  title_font = Lucida Grande Medium 9
 [keybindings]
 [profiles]
   [[default]]
     background_color = "#282828"
-    cursor_color = "#f7f7f7"
-    font = Consolas 9
+    font = Monospace 10
     foreground_color = "#f7f7f7"
     show_titlebar = False
     scrollback_lines = 99999
