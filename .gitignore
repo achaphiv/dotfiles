@@ -17,3 +17,6 @@ package-lock.json
 
 # yarn
 yarn-error.log
+
+# nohup
+nohup.out
