@@ -14,9 +14,9 @@
       - git
       - p7zip
       - gitg
+      - kitty
       - mpv
       - nodejs-lts-gallium
-      - terminator
       - docker
       - docker-compose
       - keepassxc
