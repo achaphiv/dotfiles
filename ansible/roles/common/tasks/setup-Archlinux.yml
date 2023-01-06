@@ -21,6 +21,7 @@
       - docker-compose
       - keepassxc
       - nix
+      - starship
       - syncthing
       - unp
       - yay
