@@ -8,23 +8,27 @@
 - name: Common packages
   pacman:
     name:
-      - barrier
+      # Browsers
       - chromium
       - firefox-developer-edition
-      - git
+      # General
+      - barrier
+      - keepassxc
       - p7zip
-      - gitg
-      - kitty
+      - unp
       - mpv
-      - nodejs-lts-gallium
+      - syncthing
+      # Packages
+      - nix
+      - yay
+      # Dev
+      - kitty
+      - starship
+      - git
+      - gitg
       - docker
       - docker-compose
-      - keepassxc
-      - nix
-      - starship
-      - syncthing
-      - unp
-      - yay
+      - nodejs-lts-gallium
       - yarn
       - jdk11-openjdk
       # Fonts
