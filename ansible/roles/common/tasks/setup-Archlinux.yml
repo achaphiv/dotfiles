@@ -27,6 +27,9 @@
       - yay
       - yarn
       - jdk11-openjdk
+      # Fonts
+      - ttf-nerd-fonts-symbols-2048-em-mono
+      - otf-cascadia-code
     state: present
   become: true
 
