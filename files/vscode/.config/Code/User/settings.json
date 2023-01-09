@@ -2,12 +2,12 @@
   "telemetry.telemetryLevel": "off",
 
   "editor.bracketPairColorization.enabled": false,
-  "editor.fontFamily": "'Cascadia Mono', 'Noto Sans Mono', 'monospace'",
+  "editor.fontFamily": "monospace",
   "editor.fontSize": 13,
   "editor.fontWeight": "350",
 
   "terminal.integrated.fontSize": 15,
-  "terminal.integrated.fontFamily": "'Cascadia Mono', 'Noto Mono', 'monospace'",
+  "terminal.integrated.fontFamily": "monospace",
   "terminal.integrated.fontWeight": "350",
 
   "editor.rulers": [80, 100],
