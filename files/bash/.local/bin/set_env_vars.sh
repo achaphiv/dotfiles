@@ -10,7 +10,7 @@ EOF
 
 export XDG_DATA_DIRS=$(paste -d ":" -s - << EOF
 $HOME/.nix-profile/share
-$XDG_DATA_DIRS
+${XDG_DATA_DIRS:-/usr/local/share:/usr/share}
 EOF
 )
 
