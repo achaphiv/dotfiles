@@ -9,7 +9,6 @@
     - fish-shell
     - eclipse
     - common
-    - tfswitch
     - pulumi
     - role: 'hacks-eluktronics-thinn15'
       when: ansible_system_vendor == 'Eluktronics' and ansible_product_name == 'THINN-15'
