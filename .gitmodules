@@ -7,6 +7,3 @@
 [submodule "roles/geerlingguy.nodejs"]
 	path = ansible/roles/geerlingguy.nodejs
 	url = https://github.com/geerlingguy/ansible-role-nodejs
-[submodule "roles/kewlfft.aur"]
-	path = ansible/roles/kewlfft.aur
-	url = https://github.com/kewlfft/ansible-aur
