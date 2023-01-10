@@ -7,7 +7,6 @@
     - fonts
     - cron
     - fish-shell
-    - eclipse
     - common
     - pulumi
     - role: 'hacks-eluktronics-thinn15'
