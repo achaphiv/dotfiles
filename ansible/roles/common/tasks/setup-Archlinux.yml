@@ -31,10 +31,6 @@
       - nodejs-lts-gallium
       - yarn
       - jdk11-openjdk
-      # Fonts
-      - ttf-jetbrains-mono
-      - ttf-nerd-fonts-symbols-2048-em-mono
-      - otf-cascadia-code
     state: present
   become: true
 

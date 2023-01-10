@@ -1,6 +1,9 @@
 - name: Install packages
   pacman:
     name:
+      - ttf-jetbrains-mono
+      - ttf-nerd-fonts-symbols-2048-em-mono
+      - otf-cascadia-code
       # Necessary for emoji
       - noto-fonts-emoji
     state: present
