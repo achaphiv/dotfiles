@@ -14,7 +14,7 @@ ${XDG_DATA_DIRS:-/usr/local/share:/usr/share}
 EOF
 )
 
-export SSH_AUTH_SOCK="${XDG_RUNTIME_DIR}/ssh-agent.socket"
+export SSH_AUTH_SOCK="${SSH_AUTH_SOCK:-${XDG_RUNTIME_DIR}/ssh-agent.socket}"
 
 export FISH_CLIPBOARD_CMD=cat
 export TERM=xterm-256color
