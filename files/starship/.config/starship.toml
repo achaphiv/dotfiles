@@ -16,6 +16,9 @@ $line_break\
 $character\
 """
 
+[git_branch]
+symbol = " "
+
 [fill]
 symbol = " "
 
