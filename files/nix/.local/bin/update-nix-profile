@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# Broke around 2024-04-03
+# Looks like there's a new `--regex` flag
+#nix profile upgrade --impure '.*'
+nix profile upgrade --impure --all
+
+nix profile wipe-history --older-than 21d
+
+nix store gc
+
