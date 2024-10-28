@@ -10,7 +10,7 @@ main() {
 
 install_deps() {
   which pip3 || install_pip3
-  pip3 install --user pipenv
+  pip3 install --user --break-system-packages pipenv
   python3 -m pipenv install --dev
 }
 
