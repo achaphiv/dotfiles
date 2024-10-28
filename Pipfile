@@ -10,3 +10,4 @@ allow_prereleases = true
 
 [packages]
 ansible = "*"
+cython = "<3.0.0"
