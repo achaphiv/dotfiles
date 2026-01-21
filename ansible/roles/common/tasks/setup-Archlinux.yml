@@ -12,7 +12,7 @@
       - chromium
       - firefox-developer-edition
       # General
-      - barrier
+      - input-leap
       - keepassxc
       - p7zip
       - unp
