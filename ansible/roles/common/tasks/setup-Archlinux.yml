@@ -2,6 +2,7 @@
   pacman:
     name:
       - nodejs-lts-fermium
+      - nodejs-lts-gallium
     state: absent
   become: false
 
@@ -28,7 +29,7 @@
       - gitg
       - docker
       - docker-compose
-      - nodejs-lts-gallium
+      - nodejs-lts-krypton
       - yarn
       - jdk11-openjdk
     state: present
