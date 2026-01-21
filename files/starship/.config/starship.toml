@@ -29,3 +29,9 @@ format = "[$time]($style) "
 [character]
 success_symbol = "[➜](bold green)"
 error_symbol = "[✗](bold red)"
+
+[directory]
+truncation_length = 5
+truncate_to_repo = false
+before_repo_root_style = "cyan"
+repo_root_style = "bold cyan"
