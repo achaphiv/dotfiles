@@ -1,0 +1,16 @@
+theme = Catppuccin Latte
+
+font-family = "Jetbrains Mono"
+font-feature = -calt
+
+command = bash -i -c fish
+
+window-padding-x = 6
+window-padding-y = 6
+
+keybind = ctrl+enter=unbind
+gtk-wide-tabs = false
+adw-toolbar-style = raised-border
+
+keybind = ctrl+shift+page_up=move_tab:-1
+keybind = ctrl+shift+page_down=move_tab:1
