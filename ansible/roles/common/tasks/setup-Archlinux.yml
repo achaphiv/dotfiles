@@ -33,6 +33,7 @@
       - docker-compose
       - nodejs-lts-krypton
       - jdk11-openjdk
+      - jdk25-openjdk
     state: present
   become: true
 
