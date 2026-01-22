@@ -32,7 +32,6 @@
       - docker
       - docker-compose
       - nodejs-lts-krypton
-      - yarn
       - jdk11-openjdk
     state: present
   become: true
