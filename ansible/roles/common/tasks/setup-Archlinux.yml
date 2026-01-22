@@ -13,6 +13,7 @@
       - chromium
       - firefox-developer-edition
       # General
+      - easyeffects
       - input-leap
       - keepassxc
       - p7zip
