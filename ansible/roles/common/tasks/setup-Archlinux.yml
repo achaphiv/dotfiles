@@ -24,6 +24,7 @@
       - nix
       - yay
       # Dev
+      - corepack
       - kitty
       - starship
       - git
