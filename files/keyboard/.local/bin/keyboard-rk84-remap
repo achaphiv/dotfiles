@@ -1,0 +1,19 @@
+#!/bin/sh
+
+set -xuo pipefail
+
+# RK84 defaults
+
+# showkey
+# 107 = End
+# 104 = Page Up
+# 109 = Page Down
+
+# xev
+# 115 = End
+# 112 = Page Up
+# 117 = Page Down
+
+xmodmap -e 'keycode 115 = Page_Up NoSymbol Page_Up'
+xmodmap -e 'keycode 112 = Page_Down NoSymbol Page_Down'
+xmodmap -e 'keycode 117 = End NoSymbol End'
