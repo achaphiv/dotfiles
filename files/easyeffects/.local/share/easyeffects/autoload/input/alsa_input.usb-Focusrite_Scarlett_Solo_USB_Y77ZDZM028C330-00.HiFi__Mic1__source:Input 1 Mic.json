@@ -1,0 +1,6 @@
+{
+    "device": "alsa_input.usb-Focusrite_Scarlett_Solo_USB_Y77ZDZM028C330-00.HiFi__Mic1__source",
+    "device-description": "Scarlett Solo (3rd Gen.) Input 1 Mic",
+    "device-profile": "Input 1 Mic",
+    "preset-name": "scarlett-solo"
+}
