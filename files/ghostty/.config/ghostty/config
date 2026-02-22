@@ -9,6 +9,7 @@ window-padding-x = 6
 window-padding-y = 6
 
 keybind = ctrl+enter=unbind
+window-show-tab-bar = always
 gtk-wide-tabs = false
 adw-toolbar-style = raised-border
 
