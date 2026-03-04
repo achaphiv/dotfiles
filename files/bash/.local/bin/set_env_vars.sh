@@ -2,8 +2,11 @@
 
 APPS=$HOME/.local/opt
 
+export PNPM_HOME=$HOME/.local/share/pnpm/
+
 export PATH=$(paste -d ":" -s - << EOF
 $HOME/.local/bin/
+$PNPM_HOME
 $PATH
 EOF
 )
