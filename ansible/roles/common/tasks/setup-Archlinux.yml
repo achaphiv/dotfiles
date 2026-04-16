@@ -14,6 +14,9 @@
       - firefox-developer-edition
       # General
       - easyeffects
+      # Easy effects plugins
+      - lsp-plugins-lv2
+      - calf
       - deskflow
       - keepassxc
       - p7zip
@@ -34,6 +37,7 @@
       - nodejs-lts-krypton
       - jdk11-openjdk
       - jdk25-openjdk
+      - vivid
     state: present
   become: true
 
