@@ -31,6 +31,7 @@
       - kitty
       - starship
       - git
+      - git-delta
       - gitg
       - docker
       - docker-compose
