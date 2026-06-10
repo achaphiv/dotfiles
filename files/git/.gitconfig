@@ -8,6 +8,7 @@
 	editor = nano
 	ignorecase = false
 	eol = lf
+        pager = delta
 [pull]
 	rebase = true
 
