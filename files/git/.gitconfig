@@ -3,6 +3,7 @@
 	email = achaphiv@gmail.com
 [push]
 	default = simple
+	followTags = true
 [core]
 	editor = nano
 	ignorecase = false
