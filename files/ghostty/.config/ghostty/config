@@ -1,6 +1,6 @@
 theme = Catppuccin Latte
 
-font-family = "Jetbrains Mono"
+font-family = "JetBrainsMono Nerd Font Mono"
 font-feature = -calt
 
 command = bash -i -c fish
