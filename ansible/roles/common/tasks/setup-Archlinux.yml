@@ -28,7 +28,6 @@
       - yay
       # Dev
       - corepack
-      - kitty
       - starship
       - git
       - git-delta
