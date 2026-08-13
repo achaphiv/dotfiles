@@ -35,7 +35,6 @@
       - docker
       - docker-compose
       - nodejs-lts-krypton
-      - jdk11-openjdk
       - jdk25-openjdk
       - vivid
     state: present
