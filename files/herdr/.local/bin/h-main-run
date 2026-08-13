@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+if (( $# == 0 )); then
+  printf 'usage: h-main-run COMMAND...\n' >&2
+  exit 64
+fi
+
+tab_list_json=$(herdr tab list --workspace "$HERDR_WORKSPACE_ID")
+
+while read -r tab_id; do
+  herdr tab close "$tab_id"
+done < <(
+  jq -r '.result.tabs[] | select(.label == "main") | .tab_id' <<<"$tab_list_json"
+)
+
+tab_json=$(herdr tab create \
+  --workspace "$HERDR_WORKSPACE_ID" \
+  --cwd "$PWD" \
+  --label main \
+  --no-focus)
+
+pane_id=$(jq -er '.result.root_pane.pane_id' <<<"$tab_json")
+
+herdr pane run "$pane_id" "$@"

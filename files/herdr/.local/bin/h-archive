@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+exec h-main-run-codex '$x-archive'

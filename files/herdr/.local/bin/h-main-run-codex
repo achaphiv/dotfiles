@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+exec h-main-run \
+  "exec bash -lc 'exec codex --yolo \\$*'"
