@@ -7,6 +7,24 @@ if (( $# != 4 )); then
   exit 64
 fi
 
+# An open-ended prompt can outrun any fixed deadline; raise this rather than lose the run.
+timeout_ms="${H_REVIEW_TIMEOUT_MS:-7200000}"
+timeout_minutes=$(( timeout_ms / 60000 ))
+
+# A previous run that ended badly leaves its panes alive and its names held. Suffix around them so
+# a stranded tab can never block the next run with agent_name_taken.
+held_names="$(herdr agent list 2>/dev/null \
+  | jq -r '.result.agents[]?.name | select(type == "string")' || true)"
+
+name_for() {
+  local base="$1"
+  if grep -qxF -- "$base" <<<"$held_names"; then
+    printf '%s-%s\n' "$base" "$$"
+  else
+    printf '%s\n' "$base"
+  fi
+}
+
 original_pane_json="$(herdr pane current)"
 original_tab_id="$(jq -er '.result.pane.tab_id' <<<"$original_pane_json")"
 
@@ -64,52 +82,69 @@ start_agent() {
   return 1
 }
 
-start_agent claude-review claude "$root_pane" \
+names=(
+  "$(name_for claude-review)"
+  "$(name_for codex-review-1)"
+  "$(name_for codex-review-2)"
+  "$(name_for codex-review-3)"
+)
+
+start_agent "${names[0]}" claude "$root_pane" \
   --model opus --effort high --dangerously-skip-permissions
-start_agent codex-review-1 codex "$right_pane" \
-  --model gpt-5.6-luna -c 'model_reasoning_effort="max"'
-start_agent codex-review-2 codex "$bottom_left_pane" \
-  --model gpt-5.6-luna -c 'model_reasoning_effort="max"'
-start_agent codex-review-3 codex "$bottom_right_pane" \
-  --model gpt-5.6-luna -c 'model_reasoning_effort="max"'
+start_agent "${names[1]}" codex "$right_pane" \
+  --yolo --model gpt-5.6-luna -c 'model_reasoning_effort="max"'
+start_agent "${names[2]}" codex "$bottom_left_pane" \
+  --yolo --model gpt-5.6-luna -c 'model_reasoning_effort="max"'
+start_agent "${names[3]}" codex "$bottom_right_pane" \
+  --yolo --model gpt-5.6-luna -c 'model_reasoning_effort="max"'
 
+prompts=("$1" "$2" "$3" "$4")
 prompt_pids=()
-herdr agent prompt claude-review "$1" --wait --timeout 2400000 &
-prompt_pids+=("$!")
-herdr agent prompt codex-review-1 "$2" --wait --timeout 2400000 &
-prompt_pids+=("$!")
-herdr agent prompt codex-review-2 "$3" --wait --timeout 2400000 &
-prompt_pids+=("$!")
-herdr agent prompt codex-review-3 "$4" --wait --timeout 2400000 &
-prompt_pids+=("$!")
-echo Waiting up to 40 minutes for agents to complete
+for i in 0 1 2 3; do
+  herdr agent prompt "${names[$i]}" "${prompts[$i]}" --wait --timeout "$timeout_ms" &
+  prompt_pids+=("$!")
+done
+echo "Waiting up to ${timeout_minutes} minutes for agents to complete"
 
+# A laggard must never discard the reviews that did finish, so record each outcome and report
+# them all. The panes stay alive either way, so even an unsettled agent is still readable.
 prompt_failed=0
-for prompt_pid in "${prompt_pids[@]}"; do
-  if ! wait "$prompt_pid"; then
+settled=()
+for i in 0 1 2 3; do
+  if wait "${prompt_pids[$i]}"; then
+    settled+=("finished")
+  else
+    settled+=("DID NOT SETTLE within ${timeout_minutes}m -- may still be working; re-read later")
     prompt_failed=1
   fi
 done
 
-if (( prompt_failed != 0 )); then
-  exit 1
-fi
+herdr tab focus "$original_tab_id" >/dev/null || true
 
-herdr tab focus "$original_tab_id" >/dev/null
+for i in 0 1 2 3; do
+  printf '%s: %s\n' "${names[$i]}" "${settled[$i]}"
+done
 
 cat <<INSTRUCTIONS
-All four reviews finished. Their panes are still alive, so read them one at a time
-(raise --lines or re-read as needed; each report sits at the end of its pane):
 
-  herdr agent read claude-review --source recent-unwrapped --lines 400
-  herdr agent read codex-review-1 --source recent-unwrapped --lines 400
-  herdr agent read codex-review-2 --source recent-unwrapped --lines 400
-  herdr agent read codex-review-3 --source recent-unwrapped --lines 400
+Read the reviews one at a time (raise --lines or re-read as needed; each report sits at
+the end of its pane):
+
+  herdr agent read ${names[0]} --source recent-unwrapped --lines 400
+  herdr agent read ${names[1]} --source recent-unwrapped --lines 400
+  herdr agent read ${names[2]} --source recent-unwrapped --lines 400
+  herdr agent read ${names[3]} --source recent-unwrapped --lines 400
 
 Do not pipe these through head/tail; a clipped review is a lost review. Redirect to a
 file and read that instead when a report is long.
+
+Poll an agent that did not settle:
+
+  herdr agent list | jq -r '.result.agents[]? | select(.name == "${names[3]}") | .agent_status'
 
 Release the panes once every review has been read:
 
   herdr tab close $review_tab_id
 INSTRUCTIONS
+
+exit "$prompt_failed"
