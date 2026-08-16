@@ -3,7 +3,7 @@
 set -euo pipefail
 
 if (( $# != 4 )); then
-  printf 'usage: h-review PROMPT1 PROMPT2 PROMPT3 PROMPT4\n' >&2
+  printf 'usage: h-review-4 PROMPT1 PROMPT2 PROMPT3 PROMPT4\n' >&2
   exit 64
 fi
 
@@ -28,13 +28,41 @@ name_for() {
 original_pane_json="$(herdr pane current)"
 original_tab_id="$(jq -er '.result.pane.tab_id' <<<"$original_pane_json")"
 
-tab_json="$(herdr tab create \
-  --workspace "$HERDR_WORKSPACE_ID" \
-  --cwd "$PWD" \
-  --label reviews \
-  --focus)"
-review_tab_id="$(jq -er '.result.tab.tab_id' <<<"$tab_json")"
-root_pane="$(jq -er '.result.root_pane.pane_id' <<<"$tab_json")"
+tabs_json="$(herdr tab list --workspace "$HERDR_WORKSPACE_ID")"
+review_tab_id="$(jq -r --arg label reviews \
+  'first(.result.tabs[]? | select(.label == $label) | .tab_id) // empty' \
+  <<<"$tabs_json")"
+
+if [[ -n "$review_tab_id" ]]; then
+  panes_json="$(herdr pane list --workspace "$HERDR_WORKSPACE_ID")"
+  mapfile -t old_panes < <(
+    jq -r --arg tab_id "$review_tab_id" \
+      '.result.panes[]? | select(.tab_id == $tab_id) | .pane_id' \
+      <<<"$panes_json"
+  )
+  if (( ${#old_panes[@]} == 0 )); then
+    printf 'reviews tab has no panes\n' >&2
+    exit 1
+  fi
+
+  # Keep one replacement pane alive while the old panes are closed.
+  replacement_json="$(herdr pane split "${old_panes[0]}" \
+    --direction right \
+    --cwd "$PWD" \
+    --no-focus)"
+  root_pane="$(jq -er '.result.pane.pane_id' <<<"$replacement_json")"
+  for pane in "${old_panes[@]}"; do
+    herdr pane close "$pane" >/dev/null
+  done
+else
+  tab_json="$(herdr tab create \
+    --workspace "$HERDR_WORKSPACE_ID" \
+    --cwd "$PWD" \
+    --label reviews \
+    --no-focus)"
+  review_tab_id="$(jq -er '.result.tab.tab_id' <<<"$tab_json")"
+  root_pane="$(jq -er '.result.root_pane.pane_id' <<<"$tab_json")"
+fi
 
 right_json="$(herdr pane split "$root_pane" \
   --direction right \
@@ -130,21 +158,15 @@ cat <<INSTRUCTIONS
 Read the reviews one at a time (raise --lines or re-read as needed; each report sits at
 the end of its pane):
 
-  herdr agent read ${names[0]} --source recent-unwrapped --lines 400
-  herdr agent read ${names[1]} --source recent-unwrapped --lines 400
-  herdr agent read ${names[2]} --source recent-unwrapped --lines 400
-  herdr agent read ${names[3]} --source recent-unwrapped --lines 400
+\`\`\`bash
+herdr agent read ${names[0]} --source recent-unwrapped --lines 400
+herdr agent read ${names[1]} --source recent-unwrapped --lines 400
+herdr agent read ${names[2]} --source recent-unwrapped --lines 400
+herdr agent read ${names[3]} --source recent-unwrapped --lines 400
+\`\`\`
 
 Do not pipe these through head/tail; a clipped review is a lost review. Redirect to a
 file and read that instead when a report is long.
-
-Poll an agent that did not settle:
-
-  herdr agent list | jq -r '.result.agents[]? | select(.name == "${names[3]}") | .agent_status'
-
-Release the panes once every review has been read:
-
-  herdr tab close $review_tab_id
 INSTRUCTIONS
 
 exit "$prompt_failed"
