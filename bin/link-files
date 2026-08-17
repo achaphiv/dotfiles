@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Avoid symbolic links of common prefixes
+mkdir -p ~/.config/
+mkdir -p ~/.local/bin/
+mkdir -p ~/.local/opt/
+mkdir -p ~/.var/app/
+
+cd files
+stow --target=$HOME */
