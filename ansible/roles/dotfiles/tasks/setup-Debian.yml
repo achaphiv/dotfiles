@@ -1,5 +1,0 @@
-- name: Stow
-  apt:
-    name: stow
-    state: present
-  become: yes

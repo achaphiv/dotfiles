@@ -1,8 +1,0 @@
-- include_tasks: 'setup-{{ ansible_os_family }}.yml'
-
-- name: Symlink my dotfiles
-  shell: |
-    cd $HOME/dotfiles/files/
-    for dir in *; do
-      stow --target=$HOME $(basename $dir)
-    done
