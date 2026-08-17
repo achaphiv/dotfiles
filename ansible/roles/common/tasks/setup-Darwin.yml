@@ -14,6 +14,7 @@
       - jq
       - nano
       - node
+      - stow
       - the_silver_searcher
       - unp
       - yarn

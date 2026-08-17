@@ -29,6 +29,7 @@
       # Dev
       - corepack
       - starship
+      - stow
       - git
       - git-delta
       - gitg

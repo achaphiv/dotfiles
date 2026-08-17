@@ -32,6 +32,7 @@
       - terminator
       - docker-ce
       - docker-compose
+      - stow
       - unp
       # FIXME: missing tzdata package
       # - openjdk-7-source
