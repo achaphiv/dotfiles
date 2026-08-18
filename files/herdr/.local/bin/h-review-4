@@ -111,10 +111,10 @@ start_agent() {
 }
 
 names=(
-  "$(name_for claude-review)"
-  "$(name_for codex-review-1)"
-  "$(name_for codex-review-2)"
-  "$(name_for codex-review-3)"
+  "$(name_for agent-1)"
+  "$(name_for agent-2)"
+  "$(name_for agent-3)"
+  "$(name_for agent-4)"
 )
 
 start_agent "${names[0]}" claude "$root_pane" \
