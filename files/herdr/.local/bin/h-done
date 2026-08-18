@@ -9,5 +9,3 @@ tab_id=$(herdr tab list --workspace "$HERDR_WORKSPACE_ID" |
 [ -n "$tab_id" ] && herdr tab close "$tab_id"
 
 herdr workspace rename $HERDR_WORKSPACE_ID _
-
-notify-done-sound
