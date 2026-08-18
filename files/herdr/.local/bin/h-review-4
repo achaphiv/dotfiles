@@ -147,8 +147,6 @@ for i in 0 1 2 3; do
   fi
 done
 
-herdr tab focus "$original_tab_id" >/dev/null || true
-
 for i in 0 1 2 3; do
   printf '%s: %s\n' "${names[$i]}" "${settled[$i]}"
 done
