@@ -17,6 +17,9 @@ ${XDG_DATA_DIRS:-/usr/local/share:/usr/share}
 EOF
 )
 
+export CLAUDE_CODE_SHELL=/bin/bash
+export CLAUDE_CODE_TMPDIR=$HOME/tmp/
+
 export SSH_AUTH_SOCK="${SSH_AUTH_SOCK:-${XDG_RUNTIME_DIR}/ssh-agent.socket}"
 
 export FISH_CLIPBOARD_CMD=cat
