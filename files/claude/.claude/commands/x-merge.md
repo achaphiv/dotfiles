@@ -1,6 +1,6 @@
 ---
 model: opus
-effort: high
+effort: medium
 disable-model-invocation: true
 description: 'merge change'
 ---
