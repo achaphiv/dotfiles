@@ -9,8 +9,6 @@ description: 'apply'
 
 Before starting: `git rebase main`
 
-Make commits while completing tasks.
-
-Once all tasks are done, use the `x-review` skill.
+Use `x-implement` skill.
 
 Final step: run the full test suite `mise run test`
