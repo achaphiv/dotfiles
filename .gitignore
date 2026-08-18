@@ -2,6 +2,7 @@
 .DS_Store
 
 # Application data files
+files/fish/.config/fish/conf.d/
 files/maven/.m2/repository/
 files/maven/.m2/wrapper/
 files/vscodium/.config/VSCodium/
