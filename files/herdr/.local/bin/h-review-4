@@ -11,20 +11,6 @@ fi
 timeout_ms="${H_REVIEW_TIMEOUT_MS:-7200000}"
 timeout_minutes=$(( timeout_ms / 60000 ))
 
-# A previous run that ended badly leaves its panes alive and its names held. Suffix around them so
-# a stranded tab can never block the next run with agent_name_taken.
-held_names="$(herdr agent list 2>/dev/null \
-  | jq -r '.result.agents[]?.name | select(type == "string")' || true)"
-
-name_for() {
-  local base="$1"
-  if grep -qxF -- "$base" <<<"$held_names"; then
-    printf '%s-%s\n' "$base" "$$"
-  else
-    printf '%s\n' "$base"
-  fi
-}
-
 original_pane_json="$(herdr pane current)"
 original_tab_id="$(jq -er '.result.pane.tab_id' <<<"$original_pane_json")"
 
@@ -111,10 +97,10 @@ start_agent() {
 }
 
 names=(
-  "$(name_for agent-1)"
-  "$(name_for agent-2)"
-  "$(name_for agent-3)"
-  "$(name_for agent-4)"
+  "agent-1"
+  "agent-2"
+  "agent-3"
+  "agent-4"
 )
 
 start_agent "${names[0]}" claude "$root_pane" \
