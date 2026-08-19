@@ -4,9 +4,6 @@ effort: medium
 description: 'adversarial review'
 ---
 
-Compose four distinct prompts from the current session context, then run them concurrently.
-Mention that each review should be read-only.
+From current context, create four distinct prompts, each requesting a read-only adversarial review; run:
 
-```bash
-h-review-4 'prompt 1' 'prompt 2' 'prompt 3' 'prompt 4'
-```
+`h-review-4 'prompt 1' 'prompt 2' 'prompt 3' 'prompt 4'`

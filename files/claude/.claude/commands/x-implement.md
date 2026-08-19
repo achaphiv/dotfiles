@@ -4,14 +4,12 @@ effort: high
 description: 'implement change'
 ---
 
-Implement what has been requested. Make commits.
+Rebase onto `main`, then implement the request and commit.
 
-Do the following in a /loop:
+In a `/loop`:
 
 - Use `x-review` skill.
-- Integrate applicable feedback where appropiate. If changes were made, go back to `x-review`. Otherwise continue.
-- Rebase this branch on top of `main` (in case other changes were committed).
-  - If there are merge conflicts, then redo the branch, and go back to `x-review`. Prefer amending/rewriting history.
-  - When the rebase is a no-op, then end the loop.
+- Apply relevant feedback; if you make changes, return to `x-review`.
+- Rebase onto `main`. On conflicts, redo the branch and return to `x-review`; prefer amending/rewriting history. Exit when the rebase is a no-op.
 
-Upon exiting the loop, run bash command `notify-done-sound`.
+Then run `notify-done-sound`.
