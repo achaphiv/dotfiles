@@ -5,4 +5,3 @@ disable-model-invocation: true
 ---
 
 Skill `openspec-explore`
-

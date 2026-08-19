@@ -1,4 +1,3 @@
-
 Use `openspec-archive-change` skill.
 
 Skip step 4's sync assessment and prompt entirely. Do NOT call AskUserQuestion about syncing —
