@@ -1,4 +1,18 @@
 #!/bin/sh
 
+# loudness at 100% system volume, as an mpv --volume value
+target=69
+
+# The system volume scales every stream, so divide it back out to keep the
+# notification equally loud at any setting. mpv and PipeWire both apply volume
+# cubically, so the compensation is a plain ratio.
+sysvol=$(wpctl get-volume @DEFAULT_AUDIO_SINK@ 2>/dev/null | awk '{print $2}')
+volume=$(awk -v t=$target -v s=${sysvol:-1} 'BEGIN {
+  if (s <= 0) exit 1
+  v = t / s
+  print (v > 1000 ? 1000 : v)
+}') || exit 0
+
 # arbitrary sound file
-mpv --no-video --volume=85 /usr/share/sounds/freedesktop/stereo/complete.oga
+mpv --no-video --volume-max=1000 --volume=$volume \
+  /usr/share/sounds/freedesktop/stereo/complete.oga
