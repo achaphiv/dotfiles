@@ -4,7 +4,9 @@ effort: high
 description: 'implement change'
 ---
 
-Rebase onto `main`, then implement the request and commit.
+`!! git rebase main`
+
+Implement the request and commit.
 
 In a `/loop`:
 
