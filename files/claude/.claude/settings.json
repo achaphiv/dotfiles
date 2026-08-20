@@ -1,0 +1,65 @@
+{
+  "respectGitignore": true,
+  "cleanupPeriodDays": 200,
+  "env": {
+    "CLAUDE_CODE_MCP_TOOL_IDLE_TIMEOUT": "4600000"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(ls:*)",
+      "Bash(pwd)",
+      "Bash(cd:*)",
+      "Bash(grep:*)",
+      "Bash(find:*)",
+      "Bash(pnpm:*)",
+      "Bash(sed:*)",
+      "Bash(npm:*)",
+      "Bash(./mvnw:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:api.github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)"
+    ],
+    "deny": [
+      "EnterPlanMode",
+      "ExitPlanMode",
+      "DesignSync",
+      "NotebookEdit",
+      "PushNotification",
+      "RemoteTrigger",
+      "ReportFindings",
+      "ScheduleWakeup",
+      "AskUserQuestion",
+      "CronCreate",
+      "CronDelete",
+      "CronList",
+      "EndConversation",
+      "EnterWorktree",
+      "ExitWorktree",
+      "LSP",
+      "Monitor",
+      "ShareOnboardingGuide",
+      "TaskOutput",
+      "TaskStop"
+    ]
+  },
+  "model": "opus[1m]",
+  "hooks": {},
+  "enabledPlugins": {
+  },
+  "extraKnownMarketplaces": {},
+  "effortLevel": "high",
+  "tui": "fullscreen",
+  "autoMemoryEnabled": false,
+  "skipDangerousModePermissionPrompt": true,
+  "theme": "light",
+  "disableBundledSkills": false,
+  "disableRemoteControl": true,
+  "disableClaudeAiConnectors": true,
+  "disableArtifact": true,
+  "disableMobileSimulatorTools": true,
+  "disableWorkflows": true,
+  "disableSideloadFlags": true,
+  "browserExternalPageTools": "disabled",
+  "disableBrowserExternalNavigation": true,
+  "includeGitInstructions": false
+}
