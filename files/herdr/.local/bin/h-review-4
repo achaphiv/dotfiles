@@ -96,11 +96,12 @@ start_agent() {
   return 1
 }
 
+agent_run_id="$RANDOM"
 names=(
-  "agent-1"
-  "agent-2"
-  "agent-3"
-  "agent-4"
+  "agent-1-${agent_run_id}"
+  "agent-2-${agent_run_id}"
+  "agent-3-${agent_run_id}"
+  "agent-4-${agent_run_id}"
 )
 
 start_agent "${names[0]}" claude "$root_pane" \
@@ -118,7 +119,8 @@ for i in 0 1 2 3; do
   herdr agent prompt "${names[$i]}" "${prompts[$i]}" --wait --timeout "$timeout_ms" &
   prompt_pids+=("$!")
 done
-echo "Waiting up to ${timeout_minutes} minutes for agents to complete"
+
+echo "Agents started. Now waiting up to ${timeout_minutes} minutes for completion."
 
 # A laggard must never discard the reviews that did finish, so record each outcome and report
 # them all. The panes stay alive either way, so even an unsettled agent is still readable.
