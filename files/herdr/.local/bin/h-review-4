@@ -68,6 +68,13 @@ bottom_right_json="$(herdr pane split "$right_pane" \
   --no-focus)"
 bottom_right_pane="$(jq -er '.result.pane.pane_id' <<<"$bottom_right_json")"
 
+panes=(
+  "$root_pane"
+  "$right_pane"
+  "$bottom_left_pane"
+  "$bottom_right_pane"
+)
+
 start_agent() {
   local name="$1"
   local kind="$2"
@@ -104,14 +111,45 @@ names=(
   "agent-4-${agent_run_id}"
 )
 
-start_agent "${names[0]}" claude "$root_pane" \
-  --model opus --effort high --dangerously-skip-permissions
-start_agent "${names[1]}" codex "$right_pane" \
-  --yolo --model gpt-5.6-luna -c 'model_reasoning_effort="max"'
-start_agent "${names[2]}" codex "$bottom_left_pane" \
-  --yolo --model gpt-5.6-luna -c 'model_reasoning_effort="max"'
-start_agent "${names[3]}" codex "$bottom_right_pane" \
-  --yolo --model gpt-5.6-luna -c 'model_reasoning_effort="max"'
+start_agent_helper() {
+  if (( $# != 2 )); then
+    printf 'usage: start_agent_helper NAME_INDEX claude|pi|codex\n' >&2
+    return 64
+  fi
+
+  local name_index="$1"
+  local kind="$2"
+  local -a options
+
+  if [[ ! "$name_index" =~ ^[0-3]$ ]]; then
+    printf 'invalid agent name index: %s\n' "$name_index" >&2
+    return 64
+  fi
+
+  case "$kind" in
+    claude)
+      options=(--model opus --effort medium --dangerously-skip-permissions --system-prompt '')
+      ;;
+    pi)
+      options=(--model gpt-5.6-luna:max)
+      ;;
+    codex)
+      options=(--yolo --model gpt-5.6-luna -c 'model_reasoning_effort="max"')
+      ;;
+    *)
+      printf 'invalid agent kind: %s\n' "$kind" >&2
+      return 64
+      ;;
+  esac
+
+  start_agent "${names[$name_index]}" "$kind" "${panes[$name_index]}" \
+    "${options[@]}"
+}
+
+start_agent_helper 0 claude
+start_agent_helper 1 claude
+start_agent_helper 2 pi
+start_agent_helper 3 pi
 
 prompts=("$1" "$2" "$3" "$4")
 prompt_pids=()
