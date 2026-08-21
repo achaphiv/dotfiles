@@ -35,7 +35,8 @@ if [[ -n "$review_tab_id" ]]; then
   replacement_json="$(herdr pane split "${old_panes[0]}" \
     --direction right \
     --cwd "$PWD" \
-    --no-focus)"
+    --no-focus \
+    --env SHELL=/bin/bash)"
   root_pane="$(jq -er '.result.pane.pane_id' <<<"$replacement_json")"
   for pane in "${old_panes[@]}"; do
     herdr pane close "$pane" >/dev/null
@@ -45,7 +46,8 @@ else
     --workspace "$HERDR_WORKSPACE_ID" \
     --cwd "$PWD" \
     --label reviews \
-    --no-focus)"
+    --no-focus \
+    --env SHELL=/bin/bash)"
   review_tab_id="$(jq -er '.result.tab.tab_id' <<<"$tab_json")"
   root_pane="$(jq -er '.result.root_pane.pane_id' <<<"$tab_json")"
 fi
@@ -53,19 +55,22 @@ fi
 right_json="$(herdr pane split "$root_pane" \
   --direction right \
   --cwd "$PWD" \
-  --no-focus)"
+  --no-focus \
+  --env SHELL=/bin/bash)"
 right_pane="$(jq -er '.result.pane.pane_id' <<<"$right_json")"
 
 bottom_left_json="$(herdr pane split "$root_pane" \
   --direction down \
   --cwd "$PWD" \
-  --no-focus)"
+  --no-focus \
+  --env SHELL=/bin/bash)"
 bottom_left_pane="$(jq -er '.result.pane.pane_id' <<<"$bottom_left_json")"
 
 bottom_right_json="$(herdr pane split "$right_pane" \
   --direction down \
   --cwd "$PWD" \
-  --no-focus)"
+  --no-focus \
+  --env SHELL=/bin/bash)"
 bottom_right_pane="$(jq -er '.result.pane.pane_id' <<<"$bottom_right_json")"
 
 panes=(
