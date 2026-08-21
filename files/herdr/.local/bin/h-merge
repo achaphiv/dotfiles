@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# The optional follow-up is appended to the agent prompt used when the branch cannot merge as
+# is; h-merge-auto passes the instruction that loops the agent back into the merge.
+if (( $# > 1 )); then
+  printf 'usage: h-merge [AGENT_FOLLOW_UP]\n' >&2
+  exit 64
+fi
+
+follow_up="${1:-}"
+
+branch=$(git branch --show-current)
+
+if [[ -z "$branch" ]]; then
+  printf 'h-merge: HEAD is detached; check out the change branch, then rerun\n' >&2
+  exit 1
+fi
+
+if [[ "$branch" == main ]]; then
+  printf 'h-merge: already on `main`; nothing to merge\n' >&2
+  exit 1
+fi
+
+if [[ -n "$(git status --porcelain)" ]]; then
+  printf 'h-merge: uncommitted changes; commit or stash them, then rerun\n' >&2
+  exit 1
+fi
+
+# Merging without an agent is only safe while the branch is already on top of main: that is the
+# state that was reviewed. Once main has moved, the replayed change is unverified, so hand it to
+# an agent whether or not the replay hit conflicts.
+if ! git merge-base --is-ancestor main HEAD; then
+  if git rebase main; then
+    situation='`main` moved, so this branch was replayed onto it and the change needs re-verification.'
+  else
+    situation='The rebase onto `main` hit conflicts and is still in progress.
+
+Resolve the conflicts and finish the rebase, or run `git rebase --abort` and redo the branch on
+top of `main`; prefer amending/rewriting history.'
+  fi
+
+  prompt=$(printf '%s\n\n%s\n' "$situation" '`!h-implement`')
+
+  if [[ -n "$follow_up" ]]; then
+    prompt=$(printf '%s\n\n%s\n' "$prompt" "$follow_up")
+  fi
+
+  exec h-main-run-claude "$prompt"
+fi
+
+# A herdr workspace is usually a linked worktree while `main` stays checked out in the source
+# checkout, and git refuses to check out one branch twice. Commit the merge in whichever
+# worktree already holds `main` so that checkout's index and working tree stay in sync with it.
+main_worktree=$(git worktree list --porcelain | awk '
+  /^worktree /{ path = substr($0, 10) }
+  $0 == "branch refs/heads/main" { print path; exit }
+')
+
+if [[ -n "$main_worktree" ]]; then
+  merge_worktree=$main_worktree
+else
+  git checkout main
+  merge_worktree=$(git rev-parse --show-toplevel)
+fi
+
+# The branch already contains main, so this only records the merge commit; --no-edit keeps the
+# editor from hanging a non-interactive pane.
+if ! git -C "$merge_worktree" merge --no-ff --no-edit "$branch"; then
+  printf 'h-merge: merging `%s` into main at %s failed; resolve it there, then delete the branch and run `h-done`\n' \
+    "$branch" "$merge_worktree" >&2
+  exit 1
+fi
+
+if [[ -n "$main_worktree" ]]; then
+  # Leave this worktree on the merged main. Detaching also releases the branch for deletion and
+  # matches the state h-change rebases from next time.
+  git checkout --detach main
+fi
+
+git branch --delete "$branch"
+
+exec h-done
