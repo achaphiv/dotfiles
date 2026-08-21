@@ -39,7 +39,10 @@
       "Monitor",
       "ShareOnboardingGuide",
       "TaskOutput",
-      "TaskStop"
+      "TaskStop",
+      "Agent",
+      "ListAgents",
+      "SendMessage"
     ]
   },
   "model": "opus[1m]",
