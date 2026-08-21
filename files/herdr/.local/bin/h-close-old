@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+tab_list_json=$(herdr tab list --workspace "$HERDR_WORKSPACE_ID")
+
+while read -r tab_id; do
+  herdr tab close "$tab_id"
+done < <(
+  jq -r '.result.tabs[] | select(.label == "reviews") | .tab_id' <<<"$tab_list_json"
+)
