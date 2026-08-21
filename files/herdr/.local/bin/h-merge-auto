@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+if (( $# != 0 )); then
+  printf 'usage: h-merge-auto\n' >&2
+  exit 64
+fi
+
+exec h-merge 'Do not stop once the branch sits cleanly on top of `main`: run `h-merge-auto` to
+retry the merge.'
