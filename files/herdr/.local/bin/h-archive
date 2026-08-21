@@ -1,3 +1,5 @@
 #!/usr/bin/env bash
 
+set -euo pipefail
+
 exec h-main-run-codex '$x-archive'
