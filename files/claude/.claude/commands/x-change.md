@@ -2,7 +2,7 @@
 model: opus
 effort: high
 disable-model-invocation: true
-description: start change
+description: ?
 ---
 
 `!! git rebase main`
