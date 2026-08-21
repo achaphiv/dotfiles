@@ -2,10 +2,6 @@
 
 set -euo pipefail
 
-# close the reviews tab in this workspace
-tab_id=$(herdr tab list --workspace "$HERDR_WORKSPACE_ID" |
-	jq -r '.result.tabs[] | select(.label == "reviews") | .tab_id' |
-	head -n 1)
-[ -n "$tab_id" ] && herdr tab close "$tab_id"
+h-close-old
 
 herdr workspace rename $HERDR_WORKSPACE_ID _
