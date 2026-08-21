@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+if (( $# == 0 )); then
+  printf 'usage: h-change COMMAND...\n' >&2
+  exit 64
+fi
+
+h-close-old
+
+if ! git rebase main; then
+  printf 'h-change: rebase onto main failed; resolve the conflicts or run `git rebase --abort`, then rerun\n' >&2
+  exit 1
+fi
+
+exec h-main-run-claude "$* "'
+Choose `<TYPE>/<CHANGE_NAME>` (`feat`, `fix`, `refactor`, etc.) and run:
+
+git checkout -b <TYPE>/<CHANGE_NAME>
+herdr workspace rename $HERDR_WORKSPACE_ID <CHANGE_NAME>
+
+`!h-implement`
+'

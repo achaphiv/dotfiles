@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+if (( $# == 0 )); then
+  printf 'usage: h-feedback PROMPT...\n' >&2
+  exit 64
+fi
+
+tabs_json=$(herdr tab list --workspace "$HERDR_WORKSPACE_ID")
+
+# Reuse the highest existing feedback-N so a new tab never collides with a live one.
+next_index=$(jq -er '
+  [.result.tabs[]?.label // empty
+   | capture("^feedback-(?<n>[0-9]+)$").n
+   | tonumber]
+  | (max // 0) + 1
+' <<<"$tabs_json")
+
+# The pane shell parses the command below, and the agent inherits SHELL from it. Pinning
+# bash keeps both off fish, whose quoting rules differ enough to mangle prompts.
+tab_json=$(herdr tab create \
+  --workspace "$HERDR_WORKSPACE_ID" \
+  --cwd "$PWD" \
+  --label "feedback-${next_index}" \
+  --no-focus \
+  --env SHELL=/bin/bash)
+
+pane_id=$(jq -er '.result.root_pane.pane_id' <<<"$tab_json")
+
+prompt=$(printf '%s\n\n%s\n' "$*" '`!h-implement`')
+
+herdr pane run "$pane_id" \
+  "exec claude --dangerously-skip-permissions --system-prompt '' $(printf '%q' "$prompt")"

@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+cat <<'INSTRUCTIONS'
+
+Implement the request and commit.
+
+Create 4 distinct prompts, each requesting:
+
+- read-only adversarial review
+- results to temp file
+
+`h-review-4 'prompt 1' 'prompt 2' 'prompt 3' 'prompt 4'`
+
+After reading reviews, delete temp files.
+
+- If no changes necessary, rebase on `main`
+- If rebase was no-op (no conflicts), run `notify-done-sound` and stop
+
+If there were changes to be made or rebase failed, run `h-feedback <PROMPT ON WHAT TO DO>`
+INSTRUCTIONS
