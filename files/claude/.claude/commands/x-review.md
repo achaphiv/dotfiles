@@ -1,7 +1,7 @@
 ---
 model: opus
 effort: medium
-description: 'adversarial review'
+description: ?
 ---
 
 From current context, create four distinct prompts, each requesting a read-only adversarial review; run:
