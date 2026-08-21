@@ -15,11 +15,14 @@ done < <(
   jq -r '.result.tabs[] | select(.label == "main") | .tab_id' <<<"$tab_list_json"
 )
 
+# The pane shell parses COMMAND, and the agent inherits SHELL from it. Pinning bash keeps
+# both off fish, whose quoting rules differ enough to mangle prompts.
 tab_json=$(herdr tab create \
   --workspace "$HERDR_WORKSPACE_ID" \
   --cwd "$PWD" \
   --label main \
-  --no-focus)
+  --no-focus \
+  --env SHELL=/bin/bash)
 
 pane_id=$(jq -er '.result.root_pane.pane_id' <<<"$tab_json")
 
