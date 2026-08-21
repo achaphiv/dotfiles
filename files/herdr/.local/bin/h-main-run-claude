@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
 exec h-main-run \
-  "exec bash -lc 'exec claude --dangerously-skip-permissions $*'"
+  "exec bash -lc 'exec claude --dangerously-skip-permissions --system-prompt '' $*'"
