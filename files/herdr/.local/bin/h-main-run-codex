@@ -1,4 +1,10 @@
 #!/usr/bin/env bash
 
-exec h-main-run \
-  "exec bash -lc 'exec codex --yolo \\$*'"
+set -euo pipefail
+
+if (( $# == 0 )); then
+  printf 'usage: h-main-run-codex PROMPT...\n' >&2
+  exit 64
+fi
+
+exec h-main-run "exec codex --yolo $(printf '%q' "$*")"
