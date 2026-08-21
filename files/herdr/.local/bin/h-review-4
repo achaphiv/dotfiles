@@ -183,10 +183,10 @@ Read the reviews one at a time (raise --lines or re-read as needed; each report 
 the end of its pane):
 
 \`\`\`bash
-herdr agent read ${names[0]} --source recent-unwrapped --lines 400
-herdr agent read ${names[1]} --source recent-unwrapped --lines 400
-herdr agent read ${names[2]} --source recent-unwrapped --lines 400
-herdr agent read ${names[3]} --source recent-unwrapped --lines 400
+herdr agent read ${names[0]} --source recent-unwrapped --lines 100
+herdr agent read ${names[1]} --source recent-unwrapped --lines 100
+herdr agent read ${names[2]} --source recent-unwrapped --lines 100
+herdr agent read ${names[3]} --source recent-unwrapped --lines 100
 \`\`\`
 
 Do not pipe these through head/tail; a clipped review is a lost review. Redirect to a
