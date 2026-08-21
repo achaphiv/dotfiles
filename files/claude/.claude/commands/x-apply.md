@@ -2,12 +2,12 @@
 model: opus
 effort: medium
 disable-model-invocation: true
-description: 'apply'
+description: ?
 ---
 
-/openspec-apply-change
+`!! git rebase main`
 
-Before starting: `git rebase main`
+/openspec-apply-change
 
 Use `x-implement` skill.
 
