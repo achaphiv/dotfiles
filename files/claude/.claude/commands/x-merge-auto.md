@@ -2,7 +2,9 @@
 model: opus
 effort: medium
 disable-model-invocation: true
-description: auto-merge
+description: ?
 ---
 
-After implementing, rebase onto `main`; if it conflicts, use `x-implement` and retry. When no-op, merge into `main` with `--no-ff`, delete this branch, and run `h-done`.
+`! git rebase main`
+
+If rebase conflicts, use `x-implement` and retry. When no-op, merge into `main` with `--no-ff`, delete this branch, and run `h-done`.
