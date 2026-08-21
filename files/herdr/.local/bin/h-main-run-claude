@@ -1,4 +1,13 @@
 #!/usr/bin/env bash
 
+set -euo pipefail
+
+if (( $# == 0 )); then
+  printf 'usage: h-main-run-claude PROMPT...\n' >&2
+  exit 64
+fi
+
+# `printf %q` quotes the prompt for the bash pane shell; without it a multi-line prompt is
+# cut at the first newline and its words arrive as separate arguments.
 exec h-main-run \
-  "exec bash -lc 'exec claude --dangerously-skip-permissions --system-prompt '' $*'"
+  "exec claude --dangerously-skip-permissions --system-prompt '' $(printf '%q' "$*")"
