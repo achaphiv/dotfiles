@@ -28,7 +28,7 @@ tab_json=$(herdr tab create \
 
 pane_id=$(jq -er '.result.root_pane.pane_id' <<<"$tab_json")
 
-prompt=$(printf '%s\n\n%s\n' "$*" 'Run `h-implement`')
+prompt=$(printf '%s\n\n%s\n' "$*" 'Run `h-implement` and follow its instructions.')
 
 exec h-agent-run "feedback-${next_index}-$RANDOM" "$pane_id" claude "$prompt" \
   --dangerously-skip-permissions --system-prompt ''
