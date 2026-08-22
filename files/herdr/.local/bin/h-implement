@@ -7,15 +7,15 @@ cat <<'INSTRUCTIONS'
 Implement the request and commit.
 
 Run 3 distinct read-only adversarial reviews to temp files:
-`h-review-3 'prompt 1' 'prompt 2' 'prompt 3'`
-Do not set a timeout for the above command. It will complete once all reviews finish.
-Read/delete all reports; judge feedback, do not apply it blindly.
+`h-review-3 'p1' 'p2' 'p3'`
+No timeout: it waits for all reviews. Read/delete each report; assess feedback, don't apply
+it blindly.
 
-Substantive = bugs, behavior, security, data integrity, compatibility, material performance,
-failing tests, or acceptance criteria. Comments/docs, style, naming, formatting, optional
-refactors, and behavior-neutral cleanup are nitpicks. If all findings are minor, make no
-changes; rebase `main`, then run `notify-done-sound` and stop if it is a no-op (no conflicts).
+Substantive: bugs, behavior, security, data integrity, compatibility, material performance,
+failed tests, unmet acceptance criteria. Minor: docs/comments, style, naming, formatting,
+optional refactors, behavior-neutral cleanup.
 
-If any substantive finding exists, including in a mixed review, or rebase fails, run
-`h-feedback <PROMPT ON WHAT TO DO>`; delegate the fix instead of making it in this session.
+No substantive findings: make no changes; rebase `main`. If no-op/no conflicts, run
+`notify-done-sound` and stop. Any substantive finding (including mixed), or rebase failure:
+run `h-feedback <PROMPT ON WHAT TO DO>`; delegate the fix, don't make it here.
 INSTRUCTIONS
