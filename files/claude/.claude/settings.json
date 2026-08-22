@@ -42,7 +42,10 @@
       "TaskStop",
       "Agent",
       "ListAgents",
-      "SendMessage"
+      "SendMessage",
+      "WebFetch",
+      "WebSearch",
+      "Skill"
     ]
   },
   "model": "opus[1m]",
@@ -64,5 +67,6 @@
   "disableSideloadFlags": true,
   "browserExternalPageTools": "disabled",
   "disableBrowserExternalNavigation": true,
-  "includeGitInstructions": false
+  "includeGitInstructions": false,
+  "disableBundledSkills": true
 }
