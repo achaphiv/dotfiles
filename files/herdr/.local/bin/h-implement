@@ -6,17 +6,15 @@ cat <<'INSTRUCTIONS'
 
 Implement the request and commit.
 
-Create 4 distinct prompts, each requesting:
+Run 3 distinct read-only adversarial reviews to temp files:
+`h-review-3 'prompt 1' 'prompt 2' 'prompt 3'`
+Read/delete all reports; judge feedback, do not apply it blindly.
 
-- read-only adversarial review
-- results to temp file
+Substantive = bugs, behavior, security, data integrity, compatibility, material performance,
+failing tests, or acceptance criteria. Comments/docs, style, naming, formatting, optional
+refactors, and behavior-neutral cleanup are nitpicks. If all findings are minor, make no
+changes; rebase `main`, then run `notify-done-sound` and stop if it is a no-op (no conflicts).
+If mixed, fix substantive findings only.
 
-`h-review-4 'prompt 1' 'prompt 2' 'prompt 3' 'prompt 4'`
-
-After reading reviews, delete temp files.
-
-- If no changes necessary, rebase on `main`
-- If rebase was no-op (no conflicts), run `notify-done-sound` and stop
-
-If there were changes to be made or rebase failed, run `h-feedback <PROMPT ON WHAT TO DO>`
+Run `h-feedback <PROMPT ON WHAT TO DO>` only for substantive changes or rebase failure.
 INSTRUCTIONS
