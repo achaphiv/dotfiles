@@ -50,8 +50,7 @@
   },
   "model": "opus[1m]",
   "hooks": {},
-  "enabledPlugins": {
-  },
+  "enabledPlugins": {},
   "extraKnownMarketplaces": {},
   "effortLevel": "high",
   "tui": "fullscreen",
