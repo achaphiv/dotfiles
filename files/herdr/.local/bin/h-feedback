@@ -30,45 +30,5 @@ pane_id=$(jq -er '.result.root_pane.pane_id' <<<"$tab_json")
 
 prompt=$(printf '%s\n\n%s\n' "$*" '`!h-implement`')
 
-# The prompt must not travel on the pane command line. `herdr pane run` types the command
-# into a pane whose shell has not reached its prompt yet, so the tty is still in canonical
-# mode and the line discipline discards everything past 4096 bytes: a long prompt lost its
-# tail mid-`$'...'`, leaving bash parked at a `>` continuation prompt. `agent start` waits
-# for the shell prompt and `agent prompt` carries the text over the socket instead.
-agent_name="feedback-${next_index}-$RANDOM"
-
-# A pane whose shell has not finished starting reports agent_pane_busy, so retry.
-for ((attempt = 1; attempt <= 60; attempt++)); do
-  if start_response=$(herdr agent start "$agent_name" \
-    --kind claude \
-    --pane "$pane_id" \
-    -- --dangerously-skip-permissions --system-prompt '' 2>&1); then
-    break
-  fi
-
-  if [[ "$start_response" != *agent_pane_busy* || $attempt == 60 ]]; then
-    printf '%s\n' "$start_response" >&2
-    exit 1
-  fi
-
-  sleep 1
-done
-
-# Confirm the prompt actually landed. A large paste in the first moments after startup is
-# occasionally swallowed by the agent TUI, and a plain `agent prompt` still reports success;
-# `--until working` returns as soon as the turn starts rather than waiting for it to finish.
-for ((attempt = 1; attempt <= 3; attempt++)); do
-  if prompt_response=$(herdr agent prompt "$agent_name" "$prompt" \
-    --wait --until working --timeout 30000 2>&1); then
-    exit 0
-  fi
-
-  if [[ "$prompt_response" != *agent_prompt_stalled* ]]; then
-    printf '%s\n' "$prompt_response" >&2
-    exit 1
-  fi
-done
-
-printf 'h-feedback: %s did not accept the prompt\n' "$agent_name" >&2
-printf '%s\n' "$prompt_response" >&2
-exit 1
+exec h-agent-run "feedback-${next_index}-$RANDOM" "$pane_id" claude "$prompt" \
+  --dangerously-skip-permissions --system-prompt ''
