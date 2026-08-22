@@ -19,6 +19,5 @@ Choose `<TYPE>/<CHANGE_NAME>` (`feat`, `fix`, `refactor`, etc.) and run:
 
 git checkout -b <TYPE>/<CHANGE_NAME>
 herdr workspace rename $HERDR_WORKSPACE_ID <CHANGE_NAME>
-
-`!h-implement`
+h-implement
 '
