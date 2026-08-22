@@ -89,34 +89,6 @@ panes=(
   "$bottom_right_pane"
 )
 
-start_agent() {
-  local name="$1"
-  local kind="$2"
-  local pane="$3"
-  shift 3
-
-  local response
-  for ((attempt = 1; attempt <= 60; attempt++)); do
-    if response="$(herdr agent start "$name" \
-      --kind "$kind" \
-      --pane "$pane" \
-      -- "$@" 2>&1)"; then
-      printf '%s\n' "$response"
-      return
-    fi
-
-    if [[ "$response" != *agent_pane_busy* ]]; then
-      printf '%s\n' "$response" >&2
-      return 1
-    fi
-
-    sleep 1
-  done
-
-  printf '%s\n' "$response" >&2
-  return 1
-}
-
 agent_run_id="$RANDOM"
 names=(
   "agent-1-${agent_run_id}"
@@ -156,7 +128,7 @@ start_agent_helper() {
       ;;
   esac
 
-  start_agent "${names[$name_index]}" "$kind" "${panes[$name_index]}" \
+  h-agent-start "${names[$name_index]}" "${panes[$name_index]}" "$kind" \
     "${options[@]}"
 }
 

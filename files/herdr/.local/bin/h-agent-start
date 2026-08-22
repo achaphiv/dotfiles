@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# Starts an agent in an existing pane, waiting out a shell that has not finished starting.
+# Silent on success; the caller only needs the exit status.
+
+if (( $# < 3 )); then
+  printf 'usage: h-agent-start NAME PANE_ID KIND [AGENT_ARG...]\n' >&2
+  exit 64
+fi
+
+name="$1"
+pane_id="$2"
+kind="$3"
+shift 3
+
+# A pane whose shell has not finished starting reports agent_pane_busy, so retry.
+for ((attempt = 1; attempt <= 60; attempt++)); do
+  if response=$(herdr agent start "$name" \
+    --kind "$kind" \
+    --pane "$pane_id" \
+    -- "$@" 2>&1); then
+    exit 0
+  fi
+
+  if [[ "$response" != *agent_pane_busy* ]]; then
+    break
+  fi
+
+  sleep 1
+done
+
+printf '%s\n' "$response" >&2
+exit 1
