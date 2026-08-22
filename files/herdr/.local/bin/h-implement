@@ -8,6 +8,7 @@ Implement the request and commit.
 
 Run 3 distinct read-only adversarial reviews to temp files:
 `h-review-3 'prompt 1' 'prompt 2' 'prompt 3'`
+Do not set a timeout for the above command. It will complete once all reviews finish.
 Read/delete all reports; judge feedback, do not apply it blindly.
 
 Substantive = bugs, behavior, security, data integrity, compatibility, material performance,
