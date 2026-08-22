@@ -2,21 +2,55 @@
 
 set -euo pipefail
 
-if (( $# != 4 )); then
-  printf 'usage: h-review-4 PROMPT1 PROMPT2 PROMPT3 PROMPT4\n' >&2
+# One entry per reviewer. `parents` indexes an earlier reviewer's pane and is unused for
+# reviewer 0, which takes the reviews tab's root pane; `directions` is the split direction off
+# that parent. Editing these arrays changes the fan-out and the agent mix.
+kinds=(claude claude pi pi)
+parents=(0 0 0 1)
+directions=('' right down down)
+
+count=${#kinds[@]}
+
+if (( $# != count )); then
+  printf 'usage: h-review-4 PROMPT1..PROMPT%d\n' "$count" >&2
   exit 64
 fi
 
-# Each pane gets its own TMPDIR so concurrent agents cannot collide on temp files;
-# the directories have to exist before the splits below inherit them.
-mkdir -p "$HOME/tmp"/{1,2,3,4}
+prompts=("$@")
 
 # An open-ended prompt can outrun any fixed deadline; raise this rather than lose the run.
 timeout_ms="${H_REVIEW_TIMEOUT_MS:-7200000}"
 timeout_minutes=$(( timeout_ms / 60000 ))
 
-original_pane_json="$(herdr pane current)"
-original_tab_id="$(jq -er '.result.pane.tab_id' <<<"$original_pane_json")"
+pane_tmpdir() {
+  printf '%s' "$HOME/tmp/$(( $1 + 1 ))"
+}
+
+# Each pane gets its own TMPDIR so concurrent agents cannot collide on temp files; the
+# directories have to exist before the tab and the splits below inherit them.
+for ((i = 0; i < count; i++)); do
+  mkdir -p "$(pane_tmpdir "$i")"
+done
+
+# Sets `options` for one agent kind. Kept apart from the table so the table stays a list of
+# kinds, and so a kind can be swapped in there without touching its flags.
+set_agent_options() {
+  case "$1" in
+    claude)
+      options=(--model opus --effort medium --dangerously-skip-permissions --system-prompt '')
+      ;;
+    pi)
+      options=(--model openai-codex/gpt-5.6-luna:max)
+      ;;
+    codex)
+      options=(--yolo --model gpt-5.6-luna -c 'model_reasoning_effort="max"')
+      ;;
+    *)
+      printf 'h-review-4: unsupported agent kind: %s\n' "$1" >&2
+      return 64
+      ;;
+  esac
+}
 
 tabs_json="$(herdr tab list --workspace "$HERDR_WORKSPACE_ID")"
 review_tab_id="$(jq -r --arg label reviews \
@@ -31,18 +65,19 @@ if [[ -n "$review_tab_id" ]]; then
       <<<"$panes_json"
   )
   if (( ${#old_panes[@]} == 0 )); then
-    printf 'reviews tab has no panes\n' >&2
+    printf 'h-review-4: reviews tab has no panes\n' >&2
     exit 1
   fi
 
   # Keep one replacement pane alive while the old panes are closed.
-  replacement_json="$(herdr pane split "${old_panes[0]}" \
+  root_json="$(herdr pane split "${old_panes[0]}" \
     --direction right \
     --cwd "$PWD" \
     --no-focus \
     --env SHELL=/bin/bash \
-    --env TMPDIR="$HOME/tmp/1")"
-  root_pane="$(jq -er '.result.pane.pane_id' <<<"$replacement_json")"
+    --env TMPDIR="$(pane_tmpdir 0)")"
+  panes=("$(jq -er '.result.pane.pane_id' <<<"$root_json")")
+
   for pane in "${old_panes[@]}"; do
     herdr pane close "$pane" >/dev/null
   done
@@ -53,91 +88,30 @@ else
     --label reviews \
     --no-focus \
     --env SHELL=/bin/bash \
-    --env TMPDIR="$HOME/tmp/1")"
-  review_tab_id="$(jq -er '.result.tab.tab_id' <<<"$tab_json")"
-  root_pane="$(jq -er '.result.root_pane.pane_id' <<<"$tab_json")"
+    --env TMPDIR="$(pane_tmpdir 0)")"
+  panes=("$(jq -er '.result.root_pane.pane_id' <<<"$tab_json")")
 fi
 
-right_json="$(herdr pane split "$root_pane" \
-  --direction right \
-  --cwd "$PWD" \
-  --no-focus \
-  --env SHELL=/bin/bash \
-  --env TMPDIR="$HOME/tmp/2")"
-right_pane="$(jq -er '.result.pane.pane_id' <<<"$right_json")"
-
-bottom_left_json="$(herdr pane split "$root_pane" \
-  --direction down \
-  --cwd "$PWD" \
-  --no-focus \
-  --env SHELL=/bin/bash \
-  --env TMPDIR="$HOME/tmp/3")"
-bottom_left_pane="$(jq -er '.result.pane.pane_id' <<<"$bottom_left_json")"
-
-bottom_right_json="$(herdr pane split "$right_pane" \
-  --direction down \
-  --cwd "$PWD" \
-  --no-focus \
-  --env SHELL=/bin/bash \
-  --env TMPDIR="$HOME/tmp/4")"
-bottom_right_pane="$(jq -er '.result.pane.pane_id' <<<"$bottom_right_json")"
-
-panes=(
-  "$root_pane"
-  "$right_pane"
-  "$bottom_left_pane"
-  "$bottom_right_pane"
-)
+for ((i = 1; i < count; i++)); do
+  split_json="$(herdr pane split "${panes[${parents[$i]}]}" \
+    --direction "${directions[$i]}" \
+    --cwd "$PWD" \
+    --no-focus \
+    --env SHELL=/bin/bash \
+    --env TMPDIR="$(pane_tmpdir "$i")")"
+  panes+=("$(jq -er '.result.pane.pane_id' <<<"$split_json")")
+done
 
 agent_run_id="$RANDOM"
-names=(
-  "agent-1-${agent_run_id}"
-  "agent-2-${agent_run_id}"
-  "agent-3-${agent_run_id}"
-  "agent-4-${agent_run_id}"
-)
+names=()
+for ((i = 0; i < count; i++)); do
+  names+=("agent-$(( i + 1 ))-${agent_run_id}")
+done
 
-start_agent_helper() {
-  if (( $# != 2 )); then
-    printf 'usage: start_agent_helper NAME_INDEX claude|pi|codex\n' >&2
-    return 64
-  fi
-
-  local name_index="$1"
-  local kind="$2"
-  local -a options
-
-  if [[ ! "$name_index" =~ ^[0-3]$ ]]; then
-    printf 'invalid agent name index: %s\n' "$name_index" >&2
-    return 64
-  fi
-
-  case "$kind" in
-    claude)
-      options=(--model opus --effort medium --dangerously-skip-permissions --system-prompt '')
-      ;;
-    pi)
-      options=(--model openai-codex/gpt-5.6-luna:max)
-      ;;
-    codex)
-      options=(--yolo --model gpt-5.6-luna -c 'model_reasoning_effort="max"')
-      ;;
-    *)
-      printf 'invalid agent kind: %s\n' "$kind" >&2
-      return 64
-      ;;
-  esac
-
-  h-agent-start "${names[$name_index]}" "${panes[$name_index]}" "$kind" \
-    "${options[@]}"
-}
-
-start_agent_helper 0 claude
-start_agent_helper 1 claude
-start_agent_helper 2 pi
-start_agent_helper 3 pi
-
-prompts=("$1" "$2" "$3" "$4")
+for ((i = 0; i < count; i++)); do
+  set_agent_options "${kinds[$i]}"
+  h-agent-start "${names[$i]}" "${panes[$i]}" "${kinds[$i]}" "${options[@]}"
+done
 
 # Submit through h-agent-prompt instead of `agent prompt --wait`: a review agent can swallow a
 # large paste just as a main agent can, and a prompt that never landed leaves the agent idle,
@@ -145,7 +119,7 @@ prompts=("$1" "$2" "$3" "$4")
 # state-change guard built into `--wait`, so wait for `working` first; an agent that finished
 # its whole turn inside that window simply times out here and matches idle below.
 prompt_pids=()
-for i in 0 1 2 3; do
+for ((i = 0; i < count; i++)); do
   (
     h-agent-prompt "${names[$i]}" "${panes[$i]}" "${prompts[$i]}" || exit 2
     herdr agent wait "${names[$i]}" --until working --timeout 15000 >/dev/null 2>&1 || true
@@ -160,7 +134,7 @@ echo "Agents started. Now waiting up to ${timeout_minutes} minutes for completio
 # them all. The panes stay alive either way, so even an unsettled agent is still readable.
 prompt_failed=0
 settled=()
-for i in 0 1 2 3; do
+for ((i = 0; i < count; i++)); do
   status=0
   wait "${prompt_pids[$i]}" || status=$?
 
@@ -179,9 +153,15 @@ for i in 0 1 2 3; do
   esac
 done
 
-for i in 0 1 2 3; do
+for ((i = 0; i < count; i++)); do
   printf '%s: %s\n' "${names[$i]}" "${settled[$i]}"
 done
+
+read_commands="$(
+  for ((i = 0; i < count; i++)); do
+    printf 'herdr agent read %s --source recent-unwrapped --lines 100\n' "${names[$i]}"
+  done
+)"
 
 cat <<INSTRUCTIONS
 
@@ -189,10 +169,7 @@ Read the reviews one at a time (raise --lines or re-read as needed; each report 
 the end of its pane):
 
 \`\`\`bash
-herdr agent read ${names[0]} --source recent-unwrapped --lines 100
-herdr agent read ${names[1]} --source recent-unwrapped --lines 100
-herdr agent read ${names[2]} --source recent-unwrapped --lines 100
-herdr agent read ${names[3]} --source recent-unwrapped --lines 100
+${read_commands}
 \`\`\`
 
 Do not pipe these through head/tail; a clipped review is a lost review. Redirect to a
