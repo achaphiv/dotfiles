@@ -11,13 +11,7 @@ kind="$1"
 prompt="$2"
 shift 2
 
-tab_list_json=$(herdr tab list --workspace "$HERDR_WORKSPACE_ID")
-
-while read -r tab_id; do
-  herdr tab close "$tab_id"
-done < <(
-  jq -r '.result.tabs[] | select(.label == "main") | .tab_id' <<<"$tab_list_json"
-)
+h-close-tabs main
 
 # The agent inherits SHELL from the pane shell. Pinning bash keeps both off fish, whose
 # quoting rules differ enough to mangle prompts.

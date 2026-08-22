@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# Closes every tab in the workspace whose label matches one of the given globs.
+
+if (( $# == 0 )); then
+  printf 'usage: h-close-tabs LABEL_GLOB...\n' >&2
+  exit 64
+fi
+
+tab_list_json=$(herdr tab list --workspace "$HERDR_WORKSPACE_ID")
+
+# The labels are matched here rather than in jq so callers can pass shell globs.
+while IFS=$'\t' read -r label tab_id; do
+  for pattern in "$@"; do
+    # shellcheck disable=SC2254 # the pattern is a glob on purpose
+    if [[ "$label" == $pattern ]]; then
+      herdr tab close "$tab_id"
+      break
+    fi
+  done
+done < <(
+  jq -r '.result.tabs[]? | [(.label // ""), .tab_id] | @tsv' <<<"$tab_list_json"
+)
