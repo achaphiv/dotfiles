@@ -138,9 +138,19 @@ start_agent_helper 2 pi
 start_agent_helper 3 pi
 
 prompts=("$1" "$2" "$3" "$4")
+
+# Submit through h-agent-prompt instead of `agent prompt --wait`: a review agent can swallow a
+# large paste just as a main agent can, and a prompt that never landed leaves the agent idle,
+# which a settle wait reports as a finished review. Splitting submit from wait costs the
+# state-change guard built into `--wait`, so wait for `working` first; an agent that finished
+# its whole turn inside that window simply times out here and matches idle below.
 prompt_pids=()
 for i in 0 1 2 3; do
-  herdr agent prompt "${names[$i]}" "${prompts[$i]}" --wait --timeout "$timeout_ms" &
+  (
+    h-agent-prompt "${names[$i]}" "${panes[$i]}" "${prompts[$i]}" || exit 2
+    herdr agent wait "${names[$i]}" --until working --timeout 15000 >/dev/null 2>&1 || true
+    herdr agent wait "${names[$i]}" --timeout "$timeout_ms" >/dev/null
+  ) &
   prompt_pids+=("$!")
 done
 
@@ -151,12 +161,22 @@ echo "Agents started. Now waiting up to ${timeout_minutes} minutes for completio
 prompt_failed=0
 settled=()
 for i in 0 1 2 3; do
-  if wait "${prompt_pids[$i]}"; then
-    settled+=("finished")
-  else
-    settled+=("DID NOT SETTLE within ${timeout_minutes}m -- may still be working; re-read later")
-    prompt_failed=1
-  fi
+  status=0
+  wait "${prompt_pids[$i]}" || status=$?
+
+  case "$status" in
+    0)
+      settled+=("finished")
+      ;;
+    2)
+      settled+=("PROMPT NEVER ECHOED -- see the error above; nothing was reviewed")
+      prompt_failed=1
+      ;;
+    *)
+      settled+=("DID NOT SETTLE within ${timeout_minutes}m -- may still be working; re-read later")
+      prompt_failed=1
+      ;;
+  esac
 done
 
 for i in 0 1 2 3; do
