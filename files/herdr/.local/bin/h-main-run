@@ -2,10 +2,14 @@
 
 set -euo pipefail
 
-if (( $# == 0 )); then
-  printf 'usage: h-main-run COMMAND...\n' >&2
+if (( $# < 2 )); then
+  printf 'usage: h-main-run KIND PROMPT [AGENT_ARG...]\n' >&2
   exit 64
 fi
+
+kind="$1"
+prompt="$2"
+shift 2
 
 tab_list_json=$(herdr tab list --workspace "$HERDR_WORKSPACE_ID")
 
@@ -15,8 +19,8 @@ done < <(
   jq -r '.result.tabs[] | select(.label == "main") | .tab_id' <<<"$tab_list_json"
 )
 
-# The pane shell parses COMMAND, and the agent inherits SHELL from it. Pinning bash keeps
-# both off fish, whose quoting rules differ enough to mangle prompts.
+# The agent inherits SHELL from the pane shell. Pinning bash keeps both off fish, whose
+# quoting rules differ enough to mangle prompts.
 tab_json=$(herdr tab create \
   --workspace "$HERDR_WORKSPACE_ID" \
   --cwd "$PWD" \
@@ -26,4 +30,4 @@ tab_json=$(herdr tab create \
 
 pane_id=$(jq -er '.result.root_pane.pane_id' <<<"$tab_json")
 
-herdr pane run "$pane_id" "$@"
+exec h-agent-run "main-$RANDOM" "$pane_id" "$kind" "$prompt" "$@"

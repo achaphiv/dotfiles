@@ -7,4 +7,4 @@ if (( $# == 0 )); then
   exit 64
 fi
 
-exec h-main-run "exec codex --yolo $(printf '%q' "$*")"
+exec h-main-run codex "$*" --yolo

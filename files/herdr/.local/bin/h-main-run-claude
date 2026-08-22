@@ -7,7 +7,4 @@ if (( $# == 0 )); then
   exit 64
 fi
 
-# `printf %q` quotes the prompt for the bash pane shell; without it a multi-line prompt is
-# cut at the first newline and its words arrive as separate arguments.
-exec h-main-run \
-  "exec claude --dangerously-skip-permissions --system-prompt '' $(printf '%q' "$*")"
+exec h-main-run claude "$*" --dangerously-skip-permissions --system-prompt ''
