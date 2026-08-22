@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# Starts an agent in an existing pane and hands it a prompt over the socket API.
+#
+# The prompt must never travel on a pane command line. `herdr pane run` types the command
+# into the pane's tty, and a pane whose shell has not reached its prompt yet is still in
+# canonical mode, where the line discipline discards everything past 4096 bytes: a long
+# prompt lost its tail mid-`$'...'` and left bash parked at a `>` continuation prompt with
+# nothing running. `agent start` waits for the shell prompt instead, and `agent prompt`
+# carries the text over the socket, where neither length nor quoting matters.
+
+if (( $# < 4 )); then
+  printf 'usage: h-agent-run NAME PANE_ID KIND PROMPT [AGENT_ARG...]\n' >&2
+  exit 64
+fi
+
+name="$1"
+pane_id="$2"
+kind="$3"
+prompt="$4"
+shift 4
+
+# A pane whose shell has not finished starting reports agent_pane_busy, so retry.
+for ((attempt = 1; attempt <= 60; attempt++)); do
+  if start_response=$(herdr agent start "$name" \
+    --kind "$kind" \
+    --pane "$pane_id" \
+    -- "$@" 2>&1); then
+    break
+  fi
+
+  if [[ "$start_response" != *agent_pane_busy* || $attempt == 60 ]]; then
+    printf '%s\n' "$start_response" >&2
+    exit 1
+  fi
+
+  sleep 1
+done
+
+# Verify the prompt reached the agent rather than trusting the submit call. `agent start`
+# reports readiness before the agent TUI can absorb a large paste, and a prompt submitted in
+# that window is sometimes swallowed whole: claude dropped a 7.5 KB paste and sat idle, codex
+# dropped the same paste while `agent prompt --wait` still reported the agent working. Text
+# the agent echoed back is the only signal that held for both, so match the prompt's last
+# line and resubmit when it never appears. The last line, not the first: a long paste scrolls
+# its own opening out of the snapshot as soon as it is submitted.
+marker=$(
+  printf '%s' "$prompt" \
+    | awk 'NF { last = $0 } END { print last }' \
+    | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' \
+    | cut -c1-60
+)
+
+for ((attempt = 1; attempt <= 3; attempt++)); do
+  if ! prompt_response=$(herdr agent prompt "$name" "$prompt" 2>&1); then
+    printf '%s\n' "$prompt_response" >&2
+    exit 1
+  fi
+
+  if [[ -z "$marker" ]]; then
+    exit 0
+  fi
+
+  if herdr pane wait-output "$pane_id" \
+    --match "$marker" \
+    --source recent-unwrapped \
+    --timeout 15000 >/dev/null 2>&1; then
+    exit 0
+  fi
+done
+
+# A swallowed paste leaves nothing behind, so resubmitting is safe, but a TUI that kept a
+# partial paste would accumulate copies. Stop after three tries and name the pane so the
+# prompt can be finished by hand.
+printf 'h-agent-run: %s in pane %s never echoed the prompt; check it before resending\n' \
+  "$name" "$pane_id" >&2
+exit 1
