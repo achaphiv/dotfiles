@@ -14,7 +14,7 @@ Substantive = bugs, behavior, security, data integrity, compatibility, material 
 failing tests, or acceptance criteria. Comments/docs, style, naming, formatting, optional
 refactors, and behavior-neutral cleanup are nitpicks. If all findings are minor, make no
 changes; rebase `main`, then run `notify-done-sound` and stop if it is a no-op (no conflicts).
-If mixed, fix substantive findings only.
 
-Run `h-feedback <PROMPT ON WHAT TO DO>` only for substantive changes or rebase failure.
+If any substantive finding exists, including in a mixed review, or rebase fails, run
+`h-feedback <PROMPT ON WHAT TO DO>`; delegate the fix instead of making it in this session.
 INSTRUCTIONS
