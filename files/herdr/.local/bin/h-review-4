@@ -7,6 +7,10 @@ if (( $# != 4 )); then
   exit 64
 fi
 
+# Each pane gets its own TMPDIR so concurrent agents cannot collide on temp files;
+# the directories have to exist before the splits below inherit them.
+mkdir -p "$HOME/tmp"/{1,2,3,4}
+
 # An open-ended prompt can outrun any fixed deadline; raise this rather than lose the run.
 timeout_ms="${H_REVIEW_TIMEOUT_MS:-7200000}"
 timeout_minutes=$(( timeout_ms / 60000 ))
@@ -36,7 +40,8 @@ if [[ -n "$review_tab_id" ]]; then
     --direction right \
     --cwd "$PWD" \
     --no-focus \
-    --env SHELL=/bin/bash)"
+    --env SHELL=/bin/bash \
+    --env TMPDIR="$HOME/tmp/1")"
   root_pane="$(jq -er '.result.pane.pane_id' <<<"$replacement_json")"
   for pane in "${old_panes[@]}"; do
     herdr pane close "$pane" >/dev/null
@@ -47,7 +52,8 @@ else
     --cwd "$PWD" \
     --label reviews \
     --no-focus \
-    --env SHELL=/bin/bash)"
+    --env SHELL=/bin/bash \
+    --env TMPDIR="$HOME/tmp/1")"
   review_tab_id="$(jq -er '.result.tab.tab_id' <<<"$tab_json")"
   root_pane="$(jq -er '.result.root_pane.pane_id' <<<"$tab_json")"
 fi
@@ -56,21 +62,24 @@ right_json="$(herdr pane split "$root_pane" \
   --direction right \
   --cwd "$PWD" \
   --no-focus \
-  --env SHELL=/bin/bash)"
+  --env SHELL=/bin/bash \
+  --env TMPDIR="$HOME/tmp/2")"
 right_pane="$(jq -er '.result.pane.pane_id' <<<"$right_json")"
 
 bottom_left_json="$(herdr pane split "$root_pane" \
   --direction down \
   --cwd "$PWD" \
   --no-focus \
-  --env SHELL=/bin/bash)"
+  --env SHELL=/bin/bash \
+  --env TMPDIR="$HOME/tmp/3")"
 bottom_left_pane="$(jq -er '.result.pane.pane_id' <<<"$bottom_left_json")"
 
 bottom_right_json="$(herdr pane split "$right_pane" \
   --direction down \
   --cwd "$PWD" \
   --no-focus \
-  --env SHELL=/bin/bash)"
+  --env SHELL=/bin/bash \
+  --env TMPDIR="$HOME/tmp/4")"
 bottom_right_pane="$(jq -er '.result.pane.pane_id' <<<"$bottom_right_json")"
 
 panes=(
