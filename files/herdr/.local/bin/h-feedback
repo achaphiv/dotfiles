@@ -2,6 +2,24 @@
 
 set -euo pipefail
 
+if (( $# == 1 )) && [[ $1 == --help ]]; then
+  cat <<'HELP'
+usage: h-feedback PROMPT...
+       h-feedback --help
+
+Delegate a fix or other implementation task to a fresh LLM agent in a new Herdr tab.
+
+The prompt is passed to a `pi` agent running in the current working directory. The command
+creates a tab labeled `feedback-N` without focusing it, then appends:
+
+  Run `h-implement` and follow its instructions.
+
+The agent is expected to implement the task, commit its changes, and use `h-implement`'s
+review/feedback workflow. `HERDR_WORKSPACE_ID`, `herdr`, and `jq` are required.
+HELP
+  exit 0
+fi
+
 if (( $# == 0 )); then
   printf 'usage: h-feedback PROMPT...\n' >&2
   exit 64
