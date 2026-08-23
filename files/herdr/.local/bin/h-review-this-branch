@@ -31,30 +31,37 @@ pane_json=$(herdr pane split "$HERDR_PANE_ID" \
 pane_id=$(jq -er '.result.pane.pane_id' <<<"$pane_json")
 
 prompt='
-  Create 3 distinct prompts that each:
+  Recursive review/fix pass; converge and stop when progress stalls.
 
-  - read-only adversarial review on this branch
-  - write result to temp file
+  State file: `${TMPDIR:-/tmp}/${HERDR_WORKSPACE_ID}-state.md`. Read/update it
+  each round; never delete it. Store the round, prior/current verified-NEW
+  finding counts, HEAD, and fixes.
 
-  Store the generated prompts in shell variables and pass quoted expansions; do not paste
-  prompt text directly into a shell command:
+  Generate 3 distinct read-only adversarial review prompts. Each writes a temp
+  report. Use shell variables and quoted expansions:
 
   `h-review-3 "$prompt_1" "$prompt_2" "$prompt_3"`
 
-  Wait for all reviews. Read/delete each review; assess feedback, do not apply
-  blindly.
+  Wait for and read all reports, then deduplicate them. Findings must be
+  concrete, reproducible, and branch-introduced. Label each NEW, DUPLICATE,
+  ALREADY_FIXED, SPECULATIVE, or MINOR.
 
-  Substantive: bugs, behavior, security, data integrity, compatibility, material performance,
-  failed tests, unmet acceptance criteria.
+  Substantive: bugs, security, data integrity, compatibility, material
+  performance, failed tests, or unmet acceptance criteria. Minor: docs, style,
+  naming, formatting, or behavior-neutral cleanup.
 
-  Minor: docs/comments, style, naming, formatting, optional refactors, behavior-neutral cleanup.
+  Count only verified NEW substantive findings. Fix and commit only those;
+  run relevant tests/builds, then update the state file. Delete reports only
+  after recording the summary. Record whether rebasing `main` changed HEAD.
 
-  Only minor issues? Make no changes; rebase `main`. If no-op/no conflicts, run
-  `notify-done-sound` and stop here.
+  If no fixes are needed, make no code changes and rebase `main`. On a rebase
+  failure, run `notify-done-sound` and stop. A non-no-op rebase counts as
+  progress and triggers another review; a no-op rebase does not.
 
-  Any substantive finding, or rebase failure? Fix and commit. Prefer rewriting history where possible.
-
-  Finally, run `h-review-this-branch` and stop.
+  Recurse with `h-review-this-branch` only when no prior round is recorded in
+  the state file, after a non-no-op rebase, or when the current verified-NEW
+  count is strictly lower than the prior count and this round made verified
+  code changes. Otherwise run `notify-done-sound` and stop.
 '
 
 # exec h-agent-run "feedback-$RANDOM" "$pane_id" claude "$prompt" --dangerously-skip-permissions --system-prompt ''
