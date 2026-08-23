@@ -22,5 +22,5 @@ optional refactors, behavior-neutral cleanup.
 
 No substantive findings: make no changes; rebase `main`. If no-op/no conflicts, run
 `notify-done-sound` and stop. Any substantive finding (including mixed), or rebase failure:
-run `h-feedback <PROMPT ON WHAT TO DO>`; delegate the fix, don't make it here.
+run `h-feedback <PROMPT ON WHAT TO DO>` to trigger a handoff. Your work is done.
 INSTRUCTIONS
