@@ -4,6 +4,7 @@
   "env": {
     "CLAUDE_CODE_MCP_TOOL_IDLE_TIMEOUT": "4600000"
   },
+  "includeGitInstructions": false,
   "permissions": {
     "allow": [
       "Bash(ls:*)",
@@ -49,23 +50,26 @@
     ]
   },
   "model": "opus[1m]",
+  "disableClaudeAiConnectors": true,
+  "disableBundledSkills": true,
   "hooks": {},
+  "disableRemoteControl": true,
+  "disableWorkflows": true,
+  "disableArtifact": true,
   "enabledPlugins": {},
   "extraKnownMarketplaces": {},
-  "effortLevel": "high",
+  "disableSideloadFlags": true,
+  "effortLevel": "medium",
+  "modelSettings": {
+    "claude-opus-5": {
+      "effortLevel": "medium"
+    }
+  },
   "tui": "fullscreen",
   "autoMemoryEnabled": false,
   "skipDangerousModePermissionPrompt": true,
   "theme": "light",
-  "disableBundledSkills": false,
-  "disableRemoteControl": true,
-  "disableClaudeAiConnectors": true,
-  "disableArtifact": true,
   "disableMobileSimulatorTools": true,
-  "disableWorkflows": true,
-  "disableSideloadFlags": true,
   "browserExternalPageTools": "disabled",
-  "disableBrowserExternalNavigation": true,
-  "includeGitInstructions": false,
-  "disableBundledSkills": true
+  "disableBrowserExternalNavigation": true
 }
