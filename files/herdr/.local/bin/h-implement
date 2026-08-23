@@ -6,9 +6,9 @@ cat <<'INSTRUCTIONS'
 
 Implement the request and commit.
 
-Run 3 distinct read-only adversarial reviews to temp files:
+Create 3 distinct prompts for read-only adversarial reviews written out to temp files:
 `h-review-3 '<prompt 1>' '<prompt 2>' '<prompt 3>'`
-No timeout: it waits for all reviews. Read/delete each report; assess feedback, don't apply
+No timeout: it waits for all reviews. Read/delete each review; assess feedback, don't apply
 it blindly.
 
 Substantive: bugs, behavior, security, data integrity, compatibility, material performance,
