@@ -9,7 +9,7 @@ fi
 
 h-close-old
 
-rm -f -- "${TMPDIR:-/tmp}/${HERDR_WORKSPACE_ID}-state.md"
+rm -f -- "$HOME/tmp/${HERDR_WORKSPACE_ID}-state.md"
 
 if ! git rebase main; then
   printf 'h-change: rebase onto main failed; resolve the conflicts or run `git rebase --abort`, then rerun\n' >&2
