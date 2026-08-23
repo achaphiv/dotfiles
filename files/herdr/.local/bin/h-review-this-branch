@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+if (( $# == 1 )) && [[ $1 == --help ]]; then
+  cat <<'HELP'
+usage: h-review-this-branch
+       h-review-this-branch --help
+
+Trigger a new agent to review this branch
+HELP
+  exit 0
+fi
+
+if (( $# != 0 )); then
+  printf 'usage: h-review-this-branch\n' >&2
+  exit 64
+fi
+
+mkdir -p "$HOME/tmp/"
+tabs_json=$(herdr tab list --workspace "$HERDR_WORKSPACE_ID")
+
+# Reuse the highest existing feedback-N so a new tab never collides with a live one.
+next_index=$(jq -er '
+  [.result.tabs[]?.label // empty
+   | capture("^feedback-(?<n>[0-9]+)$").n
+   | tonumber]
+  | (max // 0) + 1
+' <<<"$tabs_json")
+
+# The agent inherits SHELL from the pane shell. Pinning bash keeps both off fish, whose
+# quoting rules differ enough to mangle prompts.
+tab_json=$(herdr tab create \
+  --workspace "$HERDR_WORKSPACE_ID" \
+  --cwd "$PWD" \
+  --label "feedback-${next_index}" \
+  --no-focus \
+  --env SHELL=/bin/bash \
+  --env "TMPDIR=$HOME/tmp/")
+
+pane_id=$(jq -er '.result.root_pane.pane_id' <<<"$tab_json")
+
+prompt='
+  Create 3 distinct prompts that each:
+
+  - read-only adversarial review
+  - write result to temp file
+
+  Store the generated prompts in shell variables and pass quoted expansions; do not paste
+  prompt text directly into a shell command:
+
+  `h-review-3 "$prompt_1" "$prompt_2" "$prompt_3"`
+
+  Wait for all reviews; do not impose a shorter timeout. Read/delete each review; assess feedback, do not apply
+  blindly.
+
+  Substantive: bugs, behavior, security, data integrity, compatibility, material performance,
+  failed tests, unmet acceptance criteria.
+
+  Minor: docs/comments, style, naming, formatting, optional refactors, behavior-neutral cleanup.
+
+  Only minor issues? Make no changes; rebase `main`. If no-op/no conflicts, run
+  `notify-done-sound` and stop.
+
+  Any substantive finding, or rebase failure? Fix and commit. Prefer rewriting history where possible.
+
+  Finally, run: `h-review-this-branch`
+'
+
+# exec h-agent-run "feedback-${next_index}-$RANDOM" "$pane_id" claude "$prompt" --dangerously-skip-permissions --system-prompt ''
+exec h-agent-run "feedback-${next_index}-$RANDOM" "$pane_id" pi "$prompt" --model openai-codex/gpt-5.6-luna:max
