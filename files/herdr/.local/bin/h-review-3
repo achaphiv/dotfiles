@@ -174,15 +174,11 @@ read_commands="$(
 
 cat <<INSTRUCTIONS
 
-Read the reviews one at a time (raise --lines or re-read as needed; each report sits at
-the end of its pane):
+Read the reviews one at a time (raise --lines or re-read as needed):
 
 \`\`\`bash
 ${read_commands}
 \`\`\`
-
-Do not pipe these through head/tail; a clipped review is a lost review. Redirect to a
-file and read that instead when a report is long.
 INSTRUCTIONS
 
 exit "$prompt_failed"
