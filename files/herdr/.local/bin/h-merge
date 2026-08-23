@@ -41,7 +41,7 @@ Resolve the conflicts and finish the rebase, or run `git rebase --abort` and red
 top of `main`; prefer amending/rewriting history.'
   fi
 
-  prompt=$(printf '%s\n\n%s\n' "$situation" 'Run `h-implement`')
+  prompt=$(printf '%s\n\n%s\n' "$situation" 'After fixes, run: `h-review-this-branch`')
 
   if [[ -n "$follow_up" ]]; then
     prompt=$(printf '%s\n\n%s\n' "$prompt" "$follow_up")
