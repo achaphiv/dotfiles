@@ -43,7 +43,7 @@ pane_id=$(jq -er '.result.root_pane.pane_id' <<<"$tab_json")
 prompt='
   Create 3 distinct prompts that each:
 
-  - read-only adversarial review
+  - read-only adversarial review on this branch
   - write result to temp file
 
   Store the generated prompts in shell variables and pass quoted expansions; do not paste
@@ -60,7 +60,7 @@ prompt='
   Minor: docs/comments, style, naming, formatting, optional refactors, behavior-neutral cleanup.
 
   Only minor issues? Make no changes; rebase `main`. If no-op/no conflicts, run
-  `notify-done-sound` and stop.
+  `notify-done-sound` and stop here.
 
   Any substantive finding, or rebase failure? Fix and commit. Prefer rewriting history where possible.
 
