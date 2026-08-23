@@ -21,6 +21,8 @@ failed tests, unmet acceptance criteria. Minor: docs/comments, style, naming, fo
 optional refactors, behavior-neutral cleanup.
 
 No substantive findings: make no changes; rebase `main`. If no-op/no conflicts, run
-`notify-done-sound` and stop. Any substantive finding (including mixed), or rebase failure:
-run `h-feedback <PROMPT ON WHAT TO DO>` to trigger a handoff. Your work is done.
+`notify-done-sound` and stop.
+
+Any substantive finding (including mixed), or rebase failure, run
+`h-feedback <PROMPT ON WHAT TO DO>` and stop.
 INSTRUCTIONS
