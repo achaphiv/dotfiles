@@ -64,7 +64,7 @@ prompt='
 
   Any substantive finding, or rebase failure? Fix and commit. Prefer rewriting history where possible.
 
-  Finally, run: `h-review-this-branch`
+  Finally, run `h-review-this-branch` and stop.
 '
 
 # exec h-agent-run "feedback-${next_index}-$RANDOM" "$pane_id" claude "$prompt" --dangerously-skip-permissions --system-prompt ''
