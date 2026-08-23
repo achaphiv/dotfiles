@@ -113,11 +113,9 @@ for ((i = 0; i < count; i++)); do
   h-agent-start "${names[$i]}" "${panes[$i]}" "${kinds[$i]}" "${options[@]}"
 done
 
-# Submit through h-agent-prompt instead of `agent prompt --wait`: a review agent can swallow a
-# large paste just as a main agent can, and a prompt that never landed leaves the agent idle,
-# which a settle wait reports as a finished review. Splitting submit from wait costs the
-# state-change guard built into `--wait`, so wait for `working` first; an agent that finished
-# its whole turn inside that window simply times out here and matches idle below.
+# h-agent-prompt only waits for Herdr to accept each submission. Keep the lifecycle waits here so
+# this function owns review completion and its long-running timeout; an agent that finishes its
+# whole turn before the working check simply times out here and matches idle below.
 prompt_pids=()
 for ((i = 0; i < count; i++)); do
   (
