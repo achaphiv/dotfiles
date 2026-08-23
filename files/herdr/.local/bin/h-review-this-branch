@@ -51,7 +51,7 @@ prompt='
 
   `h-review-3 "$prompt_1" "$prompt_2" "$prompt_3"`
 
-  Wait for all reviews; do not impose a shorter timeout. Read/delete each review; assess feedback, do not apply
+  Wait for all reviews. Read/delete each review; assess feedback, do not apply
   blindly.
 
   Substantive: bugs, behavior, security, data integrity, compatibility, material performance,
