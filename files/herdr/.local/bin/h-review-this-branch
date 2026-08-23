@@ -33,7 +33,9 @@ pane_id=$(jq -er '.result.pane.pane_id' <<<"$pane_json")
 prompt='
   Recursive review/fix pass; converge and stop when progress stalls.
 
-  State file: `$HOME/tmp/${HERDR_WORKSPACE_ID}-state.md`. Read/update it
+  State file: `$HOME/tmp/${HERDR_WORKSPACE_ID}-state.md`.
+
+  Read/update it
   each round; never delete it. Store the round, prior/current verified-NEW
   finding counts, HEAD, and fixes.
 
@@ -54,14 +56,14 @@ prompt='
   run relevant tests/builds, then update the state file. Delete reports only
   after recording the summary. Record whether rebasing `main` changed HEAD.
 
-  If no fixes are needed, make no code changes and rebase `main`. On a rebase
-  failure, run `notify-done-sound` and stop. A non-no-op rebase counts as
-  progress and triggers another review; a no-op rebase does not.
+  If no fixes are needed, make no code changes and rebase `main`.
+  A no-op rebase should run `h-review-done` and stop.
+  On conflicts, redo the branch.
 
   Recurse with `h-review-this-branch` only when no prior round is recorded in
   the state file, after a non-no-op rebase, or when the current verified-NEW
   count is strictly lower than the prior count and this round made verified
-  code changes. Otherwise run `notify-done-sound` and stop.
+  code changes. Otherwise run `h-review-done` and stop.
 '
 
 # exec h-agent-run "feedback-$RANDOM" "$pane_id" claude "$prompt" --dangerously-skip-permissions --system-prompt ''
