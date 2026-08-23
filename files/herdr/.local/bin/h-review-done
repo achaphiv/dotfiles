@@ -1,0 +1,22 @@
+#!/bin/bash
+
+set -euo pipefail
+
+if (( $# == 1 )) && [[ $1 == --help ]]; then
+  cat <<'HELP'
+usage: h-review-done
+       h-review-done --help
+
+Finalize review processing.
+HELP
+  exit 0
+fi
+
+rm $HOME/tmp/${HERDR_WORKSPACE_ID}-state.md
+
+notify-done-sound
+
+sleep 1
+
+h-close-old
+herdr pane close "$HERDR_PANE_ID"
