@@ -16,9 +16,9 @@ fi
 # One entry per reviewer. `parents` indexes an earlier reviewer's pane and is unused for
 # reviewer 0, which takes the reviews tab's root pane; `directions` is the split direction off
 # that parent. Editing these arrays changes the fan-out and the agent mix.
-kinds=(claude claude claude)
-parents=(0 0 0)
-directions=('' right down)
+kinds=(claude pi pi)
+parents=(0 0 0 1)
+directions=('' right down down)
 
 count=${#kinds[@]}
 
@@ -48,10 +48,10 @@ done
 set_agent_options() {
   case "$1" in
     claude)
-      options=(--model opus --effort medium --dangerously-skip-permissions --system-prompt '')
+      options=(--model opus --effort high --dangerously-skip-permissions --system-prompt '')
       ;;
     pi)
-      options=(--model openai-codex/gpt-5.6-luna:high)
+      options=(--model openai-codex/gpt-5.6-luna:xhigh)
       ;;
     codex)
       options=(--yolo --model gpt-5.6-luna -c 'model_reasoning_effort="max"')
