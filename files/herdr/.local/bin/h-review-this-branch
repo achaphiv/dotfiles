@@ -22,7 +22,7 @@ mkdir -p "$HOME/tmp/"
 # The agent inherits SHELL from the pane shell. Pinning bash keeps both off fish, whose
 # quoting rules differ enough to mangle prompts.
 pane_json=$(herdr pane split "$HERDR_PANE_ID" \
-  --direction right \
+  --direction down \
   --cwd "$PWD" \
   --no-focus \
   --env SHELL=/bin/bash \
@@ -54,14 +54,10 @@ prompt='
 
   Count only verified NEW substantive findings. Fix and commit only those;
   run relevant tests/builds, then update the state file. Delete reports only
-  after recording the summary. Record whether rebasing `main` changed HEAD.
-
-  If no fixes are needed, make no code changes and rebase `main`.
-  A no-op rebase should run `h-review-done` and stop.
-  On conflicts, redo the branch.
+  after recording the summary.
 
   Recurse with `h-review-this-branch` only when no prior round is recorded in
-  the state file, after a non-no-op rebase, or when the current verified-NEW
+  the state file, or when the current verified-NEW
   count is strictly lower than the prior count and this round made verified
   code changes. Otherwise run `h-review-done` and stop.
 '
