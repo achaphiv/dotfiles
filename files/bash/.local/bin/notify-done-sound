@@ -15,4 +15,4 @@ volume=$(awk -v t=$target -v s=${sysvol:-1} 'BEGIN {
 
 # arbitrary sound file
 mpv --no-video --volume-max=1000 --volume=$volume \
-  /usr/share/sounds/freedesktop/stereo/complete.oga
+  /usr/share/sounds/freedesktop/stereo/complete.oga >/dev/null
