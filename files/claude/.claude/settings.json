@@ -71,5 +71,6 @@
   "theme": "light",
   "disableMobileSimulatorTools": true,
   "browserExternalPageTools": "disabled",
-  "disableBrowserExternalNavigation": true
+  "disableBrowserExternalNavigation": true,
+  "workflowKeywordTriggerEnabled": false
 }
