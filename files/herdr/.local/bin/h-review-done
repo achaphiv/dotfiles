@@ -12,11 +12,30 @@ HELP
   exit 0
 fi
 
-rm $HOME/tmp/${HERDR_WORKSPACE_ID}-state.md
+head_before=$(git rev-parse HEAD)
+
+if git rebase main; then
+  head_after=$(git rev-parse HEAD)
+
+  if [[ "$head_before" != "$head_after" ]]; then
+    situation='`main` moved, so this branch was replayed onto it and the change needs re-verification.'
+  else
+    situation=''
+  fi
+else
+  situation='The rebase onto `main` hit conflicts and is still in progress.
+
+Resolve the conflicts and finish the rebase, or run `git rebase --abort` and redo the branch on
+top of `main`; prefer amending/rewriting history.'
+fi
+
+if [[ -n "$situation" ]]; then
+  prompt=$(printf '%s\n\n%s\n' "$situation" 'After fixes, run: `h-review-this-branch`')
+  exec h-main-run-pi "$prompt"
+fi
 
 notify-done-sound
 
-sleep 1
-
 h-close-old
-herdr pane close "$HERDR_PANE_ID"
+
+herdr pane close $HERDR_PANE_ID
