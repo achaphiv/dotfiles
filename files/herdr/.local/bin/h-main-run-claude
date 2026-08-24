@@ -7,4 +7,4 @@ if (( $# == 0 )); then
   exit 64
 fi
 
-exec h-main-run claude "$*" --dangerously-skip-permissions --system-prompt ''
+exec h-main-run claude "$*" --dangerously-skip-permissions --system-prompt '' --model opus --effort high
