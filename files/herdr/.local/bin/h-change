@@ -9,15 +9,15 @@ fi
 
 h-close-old
 
-rm -f -- "$HOME/tmp/${HERDR_WORKSPACE_ID}-state.md"
+rm -f -- "$HOME/tmp/${HERDR_WORKSPACE_ID}/state.md"
 
 if ! git rebase main; then
   printf 'h-change: rebase onto main failed; resolve the conflicts or run `git rebase --abort`, then rerun\n' >&2
   exit 1
 fi
 
-#exec h-main-run-pi \
-exec h-main-run-claude \
+#exec h-main-run-claude \
+exec h-main-run-pi \
 "$* "'
 Choose `<TYPE>/<CHANGE_NAME>` (`feat`, `fix`, `refactor`, etc.) and run:
 
