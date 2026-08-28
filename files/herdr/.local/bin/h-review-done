@@ -31,11 +31,7 @@ fi
 
 if [[ -n "$situation" ]]; then
   prompt=$(printf '%s\n\n%s\n' "$situation" 'After fixes, run: `h-review-this-branch`')
-  exec h-main-run-pi "$prompt"
+  echo "$prompt"
+else
+  notify-done-sound
 fi
-
-notify-done-sound
-
-h-close-old
-
-herdr pane close $HERDR_PANE_ID
