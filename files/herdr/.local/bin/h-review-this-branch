@@ -45,9 +45,8 @@ prompt='
   count is strictly lower than the prior count and this round made verified
   code changes.
 
-  Run 1:
-  - When changes were made: `h-review-this-branch`.
-  - Nothing to do: `h-review-done`.
+  - If changes were made: run `h-review-this-branch`
+  - Else: run `h-review-done`
 '
 
 # The agent inherits SHELL from the pane shell. Pinning bash keeps both off fish, whose
