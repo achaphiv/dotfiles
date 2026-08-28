@@ -50,6 +50,9 @@ top of `main`; prefer amending/rewriting history.'
   exec h-main-run-claude "$prompt"
 fi
 
+pnpm run format && git add -u && git commit -m 'style: `mise run format`' || true
+pnpm run lint --fix && git add -u && git commit -m 'style: `mise run lint --fix`' || true
+
 # A herdr workspace is usually a linked worktree while `main` stays checked out in the source
 # checkout, and git refuses to check out one branch twice. Commit the merge in whichever
 # worktree already holds `main` so that checkout's index and working tree stay in sync with it.
