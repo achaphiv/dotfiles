@@ -4,5 +4,5 @@ set -euo pipefail
 
 h-close-old
 
-rm ~/tmp/"$HERDR_WORKSPACE_ID"-state.md
+rm ~/tmp/"$HERDR_WORKSPACE_ID"/state.md || true
 herdr workspace rename "$HERDR_WORKSPACE_ID" _
