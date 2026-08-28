@@ -17,32 +17,16 @@ if (( $# != 0 )); then
   exit 64
 fi
 
-mkdir -p "$HOME/tmp/"
-
-# The agent inherits SHELL from the pane shell. Pinning bash keeps both off fish, whose
-# quoting rules differ enough to mangle prompts.
-pane_json=$(herdr pane split "$HERDR_PANE_ID" \
-  --direction down \
-  --cwd "$PWD" \
-  --no-focus \
-  --env SHELL=/bin/bash \
-  --env "TMPDIR=$HOME/tmp/")
-
-pane_id=$(jq -er '.result.pane.pane_id' <<<"$pane_json")
-
 prompt='
   Recursive review/fix pass; converge and stop when progress stalls.
 
-  State file: `$HOME/tmp/${HERDR_WORKSPACE_ID}-state.md`.
+  State file: `$HOME/tmp/${HERDR_WORKSPACE_ID}/state.md`.
 
   Read/update it
   each round; never delete it. Store the round, prior/current verified-NEW
   finding counts, HEAD, and fixes.
 
-  Generate 3 distinct read-only adversarial review prompts. Each writes a temp
-  report. Use shell variables and quoted expansions:
-
-  `h-review-3 "$prompt_1" "$prompt_2" "$prompt_3"`
+  Launch 3 read-only adversarial review subagents to investigate this branch.
 
   Wait for and read all reports, then deduplicate them. Findings must be
   concrete, reproducible, and branch-introduced. Label each NEW, DUPLICATE,
@@ -56,11 +40,26 @@ prompt='
   run relevant tests/builds, then update the state file. Delete reports only
   after recording the summary.
 
-  Recurse with `h-review-this-branch` only when no prior round is recorded in
+  Recurse only when no prior round is recorded in
   the state file, or when the current verified-NEW
   count is strictly lower than the prior count and this round made verified
-  code changes. Otherwise run `h-review-done` and stop.
+  code changes.
+
+  Pick 1:
+  - When changes were made: `h-review-this-branch`.
+  - Nothing to do: `h-review-done`.
 '
+
+# The agent inherits SHELL from the pane shell. Pinning bash keeps both off fish, whose
+# quoting rules differ enough to mangle prompts.
+pane_json=$(herdr pane split "$HERDR_PANE_ID" \
+  --direction right \
+  --cwd "$PWD" \
+  --no-focus \
+  --env SHELL=/bin/bash \
+  --env "TMPDIR=$HOME/tmp/")
+
+pane_id=$(jq -er '.result.pane.pane_id' <<<"$pane_json")
 
 # exec h-agent-run "feedback-$RANDOM" "$pane_id" claude "$prompt" --dangerously-skip-permissions --system-prompt ''
 h-agent-run "feedback-$RANDOM" "$pane_id" pi "$prompt" --model openai-codex/gpt-5.6-luna:max
