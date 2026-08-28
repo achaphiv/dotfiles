@@ -45,7 +45,7 @@ prompt='
   count is strictly lower than the prior count and this round made verified
   code changes.
 
-  Pick 1:
+  Run 1:
   - When changes were made: `h-review-this-branch`.
   - Nothing to do: `h-review-done`.
 '
