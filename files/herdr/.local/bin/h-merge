@@ -47,7 +47,7 @@ top of `main`; prefer amending/rewriting history.'
     prompt=$(printf '%s\n\n%s\n' "$prompt" "$follow_up")
   fi
 
-  exec h-main-run-claude "$prompt"
+  exec h-main-run-pi "$prompt"
 fi
 
 pnpm run format && git add -u && git commit -m 'style: `mise run format`' || true
