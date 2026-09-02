@@ -26,7 +26,7 @@ prompt='
   each round; never delete it. Store the round, prior/current verified-NEW
   finding counts, HEAD, and fixes.
 
-  Launch 3 read-only adversarial review subagents to investigate this branch.
+  Launch 2 read-only adversarial review background subagents to investigate this branch.
 
   Wait for and read all reports, then deduplicate them. Findings must be
   concrete, reproducible, and branch-introduced. Label each NEW, DUPLICATE,
