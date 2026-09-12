@@ -23,8 +23,8 @@ prompt='
   State file: `~/tmp/${HERDR_WORKSPACE_ID}/state.md`.
 
   Read/update it
-  each round; never delete it. Store the round, prior/current verified-NEW
-  finding counts, HEAD, and fixes.
+  each round; never delete it. Store the problem summary, round, prior/current verified-NEW
+  finding counts, scope of changes, and fixes.
 
   Launch 2 read-only adversarial review background subagents to investigate this branch.
 
