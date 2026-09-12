@@ -17,6 +17,12 @@ if (( $# != 0 )); then
   exit 64
 fi
 
+if git rebase main; then
+  :
+else
+  git rebase --abort || true
+fi
+
 prompt='
   Recursive review/fix pass; converge and stop when progress stalls.
 
