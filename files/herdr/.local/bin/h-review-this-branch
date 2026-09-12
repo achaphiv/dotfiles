@@ -26,15 +26,18 @@ prompt='
   each round; never delete it. Store the problem summary, round, prior/current verified-NEW
   finding counts, scope of changes, and fixes.
 
-  Launch 2 read-only adversarial review background subagents to investigate this branch.
+  Launch 2 read-only adversarial review subagents in parallel to analyze this branch
+  and search for substantive changes. Restrict the scope of the analysis to changed
+  commits.
+
+  Substantive: bugs, security, data integrity, compatibility, material
+  performance, failed tests, or unmet acceptance criteria.
+
+  Minor: docs, style, naming, formatting, or behavior-neutral cleanup.
 
   Wait for and read all reports, then deduplicate them. Findings must be
   concrete, reproducible, and branch-introduced. Label each NEW, DUPLICATE,
   ALREADY_FIXED, SPECULATIVE, or MINOR.
-
-  Substantive: bugs, security, data integrity, compatibility, material
-  performance, failed tests, or unmet acceptance criteria. Minor: docs, style,
-  naming, formatting, or behavior-neutral cleanup.
 
   Count only verified NEW substantive findings. Fix and commit only those;
   run relevant tests/builds, then update the state file. Delete reports only
