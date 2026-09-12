@@ -20,7 +20,7 @@ fi
 prompt='
   Recursive review/fix pass; converge and stop when progress stalls.
 
-  State file: `$HOME/tmp/${HERDR_WORKSPACE_ID}/state.md`.
+  State file: `~/tmp/${HERDR_WORKSPACE_ID}/state.md`.
 
   Read/update it
   each round; never delete it. Store the round, prior/current verified-NEW
