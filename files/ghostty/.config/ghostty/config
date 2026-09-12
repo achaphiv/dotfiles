@@ -15,3 +15,6 @@ adw-toolbar-style = raised-border
 
 keybind = ctrl+shift+page_up=move_tab:-1
 keybind = ctrl+shift+page_down=move_tab:1
+
+# default = 10MB (10000000)
+scrollback-limit = 20000000
