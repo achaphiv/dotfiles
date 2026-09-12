@@ -41,11 +41,9 @@ prompt='
   after recording the summary.
 
   Recurse only when no prior round is recorded in
-  the state file, or when the current verified-NEW
-  count is strictly lower than the prior count and this round made verified
-  code changes.
+  the state file, or when this round made changes.
 
-  - If changes were made: run `h-review-this-branch`
+  - If recurse: run `h-review-this-branch`
   - Else: run `h-review-done`
 '
 
