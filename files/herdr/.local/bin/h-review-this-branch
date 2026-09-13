@@ -52,8 +52,10 @@ prompt='
   Recurse only when no prior round is recorded in
   the state file, or when this round made changes.
 
-  - If recurse: run `h-review-this-branch`
-  - Else: run `h-review-done`
+  Always run one of these commands:
+
+  - If recurse: `h-review-this-branch`
+  - Else: `h-review-done`
 '
 
 # The agent inherits SHELL from the pane shell. Pinning bash keeps both off fish, whose
