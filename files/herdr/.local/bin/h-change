@@ -9,7 +9,7 @@ fi
 
 h-close-old
 
-rm -f -- "$HOME/tmp/${HERDR_WORKSPACE_ID}/state.md"
+rm -f -- "$HOME/tmp/h_${HERDR_WORKSPACE_ID}/state.md"
 
 if ! git rebase main; then
   printf 'h-change: rebase onto main failed; resolve the conflicts or run `git rebase --abort`, then rerun\n' >&2
@@ -27,9 +27,9 @@ git checkout -b <TYPE>/<CHANGE_NAME>
 herdr workspace rename $HERDR_WORKSPACE_ID <CHANGE_NAME>
 ```
 
-Implement with commits.
+Summarize the original request to file: `~/tmp/h_${HERDR_WORKSPACE_ID}/state.md`
 
-Document the original request and work done to file: `~/tmp/${HERDR_WORKSPACE_ID}/state.md`
+Implement with commits.
 
 Finally, run: `h-review-this-branch`
 '
