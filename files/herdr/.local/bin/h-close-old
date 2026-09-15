@@ -2,4 +2,4 @@
 
 set -euo pipefail
 
-exec h-close-tabs reviews 'feedback-*'
+exec h-close-tabs reviews 'feedback-*' 'main'
