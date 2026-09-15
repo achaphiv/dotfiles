@@ -16,9 +16,16 @@ if ! git rebase main; then
   exit 1
 fi
 
-#exec h-main-run-claude \
-exec h-main-run-pi \
-"$* "'
+prompt="$*"
+
+mkdir -p ~/tmp/h_${HERDR_WORKSPACE_ID}
+echo "Original request: $prompt" > ~/tmp/h_${HERDR_WORKSPACE_ID}/state.md
+
+the_command=h-main-run-claude
+#the_command=h-main-run-pi
+
+exec $the_command \
+"$prompt "'
 
 Choose `<TYPE>/<CHANGE_NAME>` (`feat`, `fix`, `refactor`, etc.) and run:
 
@@ -26,8 +33,6 @@ Choose `<TYPE>/<CHANGE_NAME>` (`feat`, `fix`, `refactor`, etc.) and run:
 git checkout -b <TYPE>/<CHANGE_NAME>
 herdr workspace rename $HERDR_WORKSPACE_ID <CHANGE_NAME>
 ```
-
-Summarize the original request to file: `~/tmp/h_${HERDR_WORKSPACE_ID}/state.md`
 
 Implement with commits.
 
