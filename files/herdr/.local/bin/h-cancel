@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+if (( $# != 0 )); then
+  printf 'usage: h-cancel\n' >&2
+  exit 64
+fi
+
+branch=$(git branch --show-current)
+
+if [[ -z "$branch" ]]; then
+  printf 'h-cancel: HEAD is detached; check out the change branch, then rerun\n' >&2
+  exit 1
+fi
+
+if [[ "$branch" == main ]]; then
+  printf 'h-cancel: already on `main`; nothing to cancel\n' >&2
+  exit 1
+fi
+
+# A herdr workspace is usually a linked worktree while `main` stays checked out in the source
+# checkout, so use a detached checkout here when the branch is already occupied elsewhere.
+main_worktree=$(git worktree list --porcelain | awk '
+  /^worktree /{ path = substr($0, 10) }
+  $0 == "branch refs/heads/main" { print path; exit }
+')
+
+if [[ -n "$main_worktree" ]]; then
+  git checkout --detach --force main
+else
+  git checkout --force main
+fi
+
+# Cancellation intentionally discards the branch, even when it has not been merged.
+git branch --delete --force "$branch"
+
+exec h-done
