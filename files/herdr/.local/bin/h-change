@@ -18,6 +18,7 @@ fi
 
 prompt="$*"
 
+rm -r .pi/agents || true
 mkdir -p ~/tmp/h_${HERDR_WORKSPACE_ID}
 echo "Original request: $prompt" > ~/tmp/h_${HERDR_WORKSPACE_ID}/state.md
 
