@@ -7,6 +7,6 @@ Use 2 adversarial subagents to review the changes.
 
 Make commits.
 
-Check committed files only. E.G. `git ls-files '**.java'`
+Check committed files only. E.G. `git ls-files '**/src/**'`
 
 No need to run tests for doc only changes.
