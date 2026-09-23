@@ -1,7 +1,9 @@
-Audit `git ls-files backend-adapter-jooq/src/main/java/**.java` to find code logic/security issues.
+Audit `git ls-files '**/src/**' -x '**/test/**'` to find code logic/security issues.
+
+Split up the work and use background/non-blocking subagents to do the actual search.
 
 E.G. concurrency issues, unvalidated user input, etc.
 
 Write findings to a `FINDINGS-{yyyy-mm-dd}.md`.
 
-Use the `x-review` skill on the generated FINDINGS.
+Use 2 background/non-blocking adversarial subagents to review the findings.
