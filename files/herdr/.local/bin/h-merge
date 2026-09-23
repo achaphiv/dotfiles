@@ -55,9 +55,8 @@ if ! mise run check; then
   exit
 fi
 
-pnpm run test
-pnpm run format && git add -u && git commit -m 'style: `pnpm run format`' || true
-pnpm run lint --fix && git add -u && git commit -m 'style: `pnpm run lint --fix`' || true
+mise run test
+mise run format && git add -u && git commit -m 'style: `mise run format`' || true
 
 # A herdr workspace is usually a linked worktree while `main` stays checked out in the source
 # checkout, and git refuses to check out one branch twice. Commit the merge in whichever
