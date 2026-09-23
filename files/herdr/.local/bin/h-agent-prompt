@@ -3,17 +3,15 @@
 set -euo pipefail
 
 # Submits a prompt to a running agent over the socket API without waiting for its turn or
-# response.
+# response. Submit only once: pane output is not a reliable delivery acknowledgment, and
+# retrying when the prompt is merely absent from the snapshot can send it multiple times.
 #
 # The prompt must never travel on a pane command line. `herdr pane run` types the command
 # into the pane's tty, and a pane whose shell has not reached its prompt yet is still in
 # canonical mode, where the line discipline discards everything past 4096 bytes: a long
 # prompt lost its tail mid-`$'...'` and left bash parked at a `>` continuation prompt with
 # nothing running. `agent prompt` carries the text over the socket, where neither length nor
-# quoting matters. However, immediately after `agent start`, the TUI can still be initializing
-# its input handler; the API may accept a prompt that the TUI swallows. Verify that the prompt
-# is echoed before returning, and retry if it was lost. This waits for input acceptance only,
-# not for the agent to finish its turn.
+# quoting matters.
 
 if (( $# != 3 )); then
   printf 'usage: h-agent-prompt NAME PANE_ID PROMPT\n' >&2
@@ -24,28 +22,10 @@ name="$1"
 pane_id="$2"
 prompt="$3"
 
-marker=$(
-  printf '%s' "$prompt" \
-    | awk 'NF { last = $0 } END { print last }' \
-    | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' \
-    | cut -c1-60
-)
+if ! prompt_response=$(herdr agent prompt "$name" "$prompt" 2>&1); then
+  printf 'h-agent-prompt: failed to submit %s in pane %s\n%s\n' \
+    "$name" "$pane_id" "$prompt_response" >&2
+  exit 1
+fi
 
-for ((attempt = 1; attempt <= 3; attempt++)); do
-  if ! prompt_response=$(herdr agent prompt "$name" "$prompt" 2>&1); then
-    printf 'h-agent-prompt: failed to submit %s in pane %s\n%s\n' \
-      "$name" "$pane_id" "$prompt_response" >&2
-    exit 1
-  fi
-
-  if [[ -z "$marker" ]] || herdr pane wait-output "$pane_id" \
-    --match "$marker" \
-    --source recent-unwrapped \
-    --timeout 15000 >/dev/null 2>&1; then
-    exit 0
-  fi
-done
-
-printf 'h-agent-prompt: prompt was not echoed by %s in pane %s after 3 submissions; inspect it before retrying manually\n' \
-  "$name" "$pane_id" >&2
-exit 1
+exit 0
