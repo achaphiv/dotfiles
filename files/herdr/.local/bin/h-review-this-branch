@@ -24,38 +24,39 @@ else
 fi
 
 prompt='
-  Recursive review/fix pass; converge and stop when progress stalls.
+Recursive review/fix pass; converge and stop when progress stalls.
 
-State file: `~/tmp/h_${HERDR_WORKSPACE_ID}/state.md`
+State file: `./tmp/state.md`
 
-  Read/update it
-  each round; never delete it. Store the problem summary, round, prior/current verified-NEW
-  finding counts, scope of changes, and fixes.
+Read/update it
+each round; never delete it. Store the problem summary, round, prior/current verified-NEW
+finding counts, scope of changes, and fixes.
 
-  Launch 2 read-only adversarial review background subagents to concurrently analyze this branch
-  and search for substantive changes. Restrict the scope of the analysis to changed
-  commits.
+Launch 2 read-only adversarial review subagents to concurrently analyze this branch
+and search for substantive changes. Ensure they are non-blocking and run in the background.
+They should suggest improvements for simplification or outright removal when possible.
+Avoid feature scope creep. Restrict the analysis to changed commits and original intention.
 
-  Substantive: bugs, security, data integrity, compatibility, material
-  performance, failed tests, or unmet acceptance criteria.
+Substantive: bugs, security, data integrity, compatibility, material
+performance, failed tests, or unmet acceptance criteria.
 
-  Minor: docs, style, naming, formatting, or behavior-neutral cleanup.
+Minor: docs, style, naming, formatting, or behavior-neutral cleanup.
 
-  Wait for and read all reports, then deduplicate them. Findings must be
-  concrete, reproducible, and branch-introduced. Label each NEW, DUPLICATE,
-  ALREADY_FIXED, SPECULATIVE, or MINOR.
+Wait for and read all reports, then deduplicate them. Findings must be
+concrete, reproducible, and branch-introduced. Label each NEW, DUPLICATE,
+ALREADY_FIXED, SPECULATIVE, or MINOR.
 
-  Count only verified NEW substantive findings. Fix and commit only those;
-  run relevant tests/builds, then update the state file. Delete reports only
-  after recording the summary.
+Count only verified NEW substantive findings. Fix and commit only those;
+run relevant tests/builds, then update the state file. Delete reports only
+after recording the summary.
 
-  Recurse only when no prior round is recorded in
-  the state file, or when this round made changes.
+Recurse only when no prior round is recorded in
+the state file, or when this round made changes.
 
-  Always run one of these commands:
+Always run one of these commands:
 
-  - If recurse: `h-review-this-branch`
-  - Else: `h-review-done`
+- If recurse: `h-review-this-branch`
+- Else: `h-review-done`
 '
 
 # The agent inherits SHELL from the pane shell. Pinning bash keeps both off fish, whose
@@ -65,7 +66,7 @@ pane_json=$(herdr pane split "$HERDR_PANE_ID" \
   --cwd "$PWD" \
   --no-focus \
   --env SHELL=/bin/bash \
-  --env "TMPDIR=$HOME/tmp/")
+  --env "TMPDIR=$PWD/tmp/")
 
 pane_id=$(jq -er '.result.pane.pane_id' <<<"$pane_json")
 
