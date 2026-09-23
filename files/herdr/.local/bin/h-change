@@ -9,7 +9,7 @@ fi
 
 h-close-old
 
-rm -f -- "$HOME/tmp/h_${HERDR_WORKSPACE_ID}/state.md"
+rm -f -- "./tmp/state.md"
 
 if ! git rebase main; then
   printf 'h-change: rebase onto main failed; resolve the conflicts or run `git rebase --abort`, then rerun\n' >&2
@@ -19,8 +19,8 @@ fi
 prompt="$*"
 
 rm -r .pi/agents || true
-mkdir -p ~/tmp/h_${HERDR_WORKSPACE_ID}
-printf 'Original request: %s\n' "$prompt" > ~/tmp/h_${HERDR_WORKSPACE_ID}/state.md
+mkdir -p tmp
+printf 'Original request: %s\n' "$prompt" > ./tmp/state.md
 
 the_command=h-main-run-claude
 #the_command=h-main-run-pi
