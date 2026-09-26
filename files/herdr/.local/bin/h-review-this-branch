@@ -65,8 +65,7 @@ pane_json=$(herdr pane split "$HERDR_PANE_ID" \
   --direction right \
   --cwd "$PWD" \
   --no-focus \
-  --env SHELL=/bin/bash \
-  --env "TMPDIR=$PWD/tmp/")
+  --env SHELL=/bin/bash)
 
 pane_id=$(jq -er '.result.pane.pane_id' <<<"$pane_json")
 
