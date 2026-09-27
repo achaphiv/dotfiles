@@ -33,7 +33,10 @@ git checkout -b <TYPE>/<CHANGE_NAME>
 herdr workspace rename $HERDR_WORKSPACE_ID <CHANGE_NAME>
 ```
 
-Implement with commits.
+Ask questions if unclear.
 
-Finally, run: `h-review-this-branch`
-'
+Once the intention is fully clarified, implement with commits.
+
+Afterwards, run: `h-review-this-branch`
+' \
+  --model "$model"
