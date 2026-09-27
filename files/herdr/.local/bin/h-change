@@ -20,10 +20,10 @@ mkdir -p tmp
 rm -f -- "./tmp/state.md"
 printf 'Original request: %s\n' "$prompt" > ./tmp/state.md
 
-#the_command=h-main-run-claude
-the_command=h-main-run-pi
+model=openai-codex/gpt-6-sol:high
+#model=openai-codex/gpt-6-luna:max
 
-exec $the_command \
+exec h-main-run pi \
 "$prompt "'
 
 Choose `<TYPE>/<CHANGE_NAME>` (`feat`, `fix`, `refactor`, etc.) and run:
