@@ -37,8 +37,8 @@ and search for substantive changes. Ensure they are non-blocking and run in the 
 They should suggest improvements for simplification or outright removal when possible.
 Avoid feature scope creep. Restrict the analysis to changed commits and original intention.
 
-Substantive: bugs, security, data integrity, compatibility, material
-performance, failed tests, or unmet acceptance criteria.
+Substantive: potential simplification, bugs, security, data integrity, compatibility,
+material performance, failed tests, dead code, or unmet acceptance criteria.
 
 Minor: docs, style, naming, formatting, or behavior-neutral cleanup.
 
