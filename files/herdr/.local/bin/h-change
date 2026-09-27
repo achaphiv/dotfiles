@@ -7,19 +7,17 @@ if (( $# == 0 )); then
   exit 64
 fi
 
-h-close-old
-
-rm -f -- "./tmp/state.md"
-
 if ! git rebase main; then
   printf 'h-change: rebase onto main failed; resolve the conflicts or run `git rebase --abort`, then rerun\n' >&2
   exit 1
 fi
 
+h-close-old
+
 prompt="$*"
 
-rm -r .pi/agents || true
 mkdir -p tmp
+rm -f -- "./tmp/state.md"
 printf 'Original request: %s\n' "$prompt" > ./tmp/state.md
 
 #the_command=h-main-run-claude
