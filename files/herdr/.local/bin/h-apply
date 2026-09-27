@@ -2,6 +2,27 @@
 
 set -euo pipefail
 
-h-close-tabs reviews
+if ! git rebase main; then
+  printf 'h-apply: rebase onto main failed; resolve the conflicts or run `git rebase --abort`, then rerun\n' >&2
+  exit 1
+fi
 
-exec h-main-run-claude /x-apply
+
+mkdir -p tmp
+rm -f -- "./tmp/state.md"
+
+h-close-old
+herdr workspace rename $HERDR_WORKSPACE_ID 'AP '$(git symbolic-ref --short HEAD)
+
+#model=openai-codex/gpt-6-sol:high
+model=openai-codex/gpt-6-luna:max
+
+exec h-main-run pi \
+"/skill:openspec-apply-change "'
+
+Split up the work, where possible, and delegate to subagents.
+Implement with commits.
+
+Once all tasks completed, run: `h-review-this-branch`
+' \
+  --model "$model"
