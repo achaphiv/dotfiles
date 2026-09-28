@@ -319,7 +319,7 @@ async function openspecExplore(words) {
   closeOldTabs();
   renameWorkspace("~~explore~~");
   await startMainAgent(
-    `/skill:openspec-explore ${words.join(" ")}\n\nPrefer multiple smaller OpenSpec changes, each on its own branch from main; number ordered branches. No worktrees.`,
+    `/skill:openspec-explore ${words.join(" ")}\n\nPrefer multiple smaller OpenSpec changes, each on its own branch from main; append number postfix to order branches. No worktrees.`,
     MODELS.explore,
   );
 }
