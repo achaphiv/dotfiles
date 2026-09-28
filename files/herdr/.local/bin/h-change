@@ -4,11 +4,11 @@
 const { spawnSync } = require("node:child_process");
 const fs = require("node:fs");
 
-const D_LOW = "openai-codex/gpt-6-luna:high"
-const D_MID = "openai-codex/gpt-6-luna:xhigh"
-const D_HIGH = "openai-codex/gpt-6-luna:max"
+const D_LOW = { command: "pi --model openai-codex/gpt-6-luna:high" };
+const D_MID = { command: "pi --model openai-codex/gpt-6-luna:xhigh" };
+const D_HIGH = { command: "pi --model openai-codex/gpt-6-luna:max" };
 
-const MODELS = {
+const AGENTS = {
   create: D_HIGH,
   explore: D_HIGH,
   main: D_HIGH,
@@ -124,8 +124,8 @@ function shellQuote(value) {
   return `'${String(value).replaceAll("'", `'"'"'`)}'`;
 }
 
-function startAgent(paneId, prompt, model) {
-  const command = `pi --model ${shellQuote(model)} ${shellQuote(prompt)}`;
+function startAgent(paneId, prompt, agent) {
+  const command = `${agent.command} ${shellQuote(prompt)}`;
   run("herdr", ["pane", "run", paneId, command]);
 }
 
@@ -151,10 +151,10 @@ function createMainPane() {
   ])?.result?.pane?.pane_id;
 }
 
-async function startMainAgent(prompt, model = MODELS.main) {
+async function startMainAgent(prompt, agent = AGENTS.main) {
   const paneId = createMainPane();
   if (!paneId) throw new Error("herdr returned no pane_id");
-  startAgent(paneId, prompt, model);
+  startAgent(paneId, prompt, agent);
 }
 
 function rebaseOntoMain(label, abortOnFailure = false) {
@@ -197,7 +197,7 @@ Once the intention is fully clarified, implement with commits.
 Afterwards, run: \`h-change review start\`
 `;
 
-  await startMainAgent(prompt, MODELS.create);
+  await startMainAgent(prompt, AGENTS.create);
 }
 
 async function reviewStart() {
@@ -218,7 +218,7 @@ async function reviewStart() {
   const reviewPane = createMainPane();
   if (!reviewPane) throw new Error("herdr returned no review pane_id");
 
-  startAgent(reviewPane, REVIEW_PROMPT, MODELS.review);
+  startAgent(reviewPane, REVIEW_PROMPT, AGENTS.review);
 
   if (recursive) {
     await sleep(5000);
@@ -307,7 +307,7 @@ async function openspecExplore(words) {
   renameWorkspace("~~explore~~");
   await startMainAgent(
     `/skill:openspec-explore ${words.join(" ")}\n\nPrefer multiple smaller OpenSpec changes, each on its own branch from main; append number postfix to order branches. No worktrees.`,
-    MODELS.explore,
+    AGENTS.explore,
   );
 }
 
@@ -375,7 +375,7 @@ async function openspecArchive(followUp = "") {
   renameWorkspace(`AR ${branch}`);
   await startMainAgent(
     "/skill:openspec-archive-change\n\nSync specs automatically; use judgement and ask only for severe issues. Commit, then run `h-change merge`.",
-    MODELS.archive,
+    AGENTS.archive,
   );
 }
 
