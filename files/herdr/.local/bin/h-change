@@ -120,25 +120,13 @@ function renameWorkspace(name) {
   run("herdr", ["workspace", "rename", workspaceId(), name]);
 }
 
-async function startAgent(name, paneId, prompt, model) {
-  for (let attempt = 0; attempt < 60; attempt++) {
-    const started = run(
-      "herdr",
-      ["agent", "start", name, "--kind", "pi", "--pane", paneId, "--", "--model", model],
-      { capture: true, allowFailure: true },
-    );
+function shellQuote(value) {
+  return `'${String(value).replaceAll("'", `'"'"'`)}'`;
+}
 
-    if (!started.status) {
-      run("herdr", ["agent", "prompt", name, prompt], { capture: true });
-      return;
-    }
-
-    const error = `${started.stdout || ""}${started.stderr || ""}${started.error?.message || ""}`;
-    if (!error.includes("agent_pane_busy") || attempt === 59) {
-      throw new Error(error.trim() || `failed to start ${name}`);
-    }
-    await sleep(1000);
-  }
+function startAgent(paneId, prompt, model) {
+  const command = `pi --model ${shellQuote(model)} ${shellQuote(prompt)}`;
+  run("herdr", ["pane", "run", paneId, command]);
 }
 
 function createMainPane() {
@@ -166,7 +154,7 @@ function createMainPane() {
 async function startMainAgent(prompt, model = MODELS.main) {
   const paneId = createMainPane();
   if (!paneId) throw new Error("herdr returned no pane_id");
-  await startAgent(`main-${process.pid}-${Date.now()}`, paneId, prompt, model);
+  startAgent(paneId, prompt, model);
 }
 
 function rebaseOntoMain(label, abortOnFailure = false) {
@@ -230,12 +218,7 @@ async function reviewStart() {
   const reviewPane = createMainPane();
   if (!reviewPane) throw new Error("herdr returned no review pane_id");
 
-  await startAgent(
-    `feedback-${process.pid}-${Date.now()}`,
-    reviewPane,
-    REVIEW_PROMPT,
-    MODELS.review,
-  );
+  startAgent(reviewPane, REVIEW_PROMPT, MODELS.review);
 
   if (recursive) {
     await sleep(5000);
