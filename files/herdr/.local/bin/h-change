@@ -11,7 +11,8 @@ const D_HIGH = { command: "pi --model openai-codex/gpt-6-luna:max" };
 const AGENTS = {
   create: D_HIGH,
   explore: D_HIGH,
-  main: D_HIGH,
+  apply: D_HIGH,
+  failedRebase: D_MID,
   review: D_MID,
   archive: D_LOW,
 };
@@ -151,7 +152,7 @@ function createMainPane() {
   ])?.result?.pane?.pane_id;
 }
 
-async function startMainAgent(prompt, agent = AGENTS.main) {
+async function startMainAgent(prompt, agent) {
   const paneId = createMainPane();
   if (!paneId) throw new Error("herdr returned no pane_id");
   startAgent(paneId, prompt, agent);
@@ -319,6 +320,7 @@ async function openspecApply() {
   renameWorkspace(`AP ${text("git", ["symbolic-ref", "--short", "HEAD"])}`);
   await startMainAgent(
     "/skill:openspec-apply-change\n\nSplit/delegate work where useful. Implement with commits. When complete run `h-change review start`.",
+    AGENTS.apply
   );
 }
 
@@ -345,6 +347,7 @@ async function handleMovedMain(followUp) {
 
   await startMainAgent(
     `${prompt}\n\nAfter fixes run \`h-change review start\`.${followUp ? `\n\n${followUp}` : ""}`,
+    AGENTS.failedRebase
   );
   return true;
 }
