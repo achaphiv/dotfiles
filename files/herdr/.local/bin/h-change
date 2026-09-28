@@ -303,7 +303,7 @@ function reviewDone() {
   const rebase = run("git", ["rebase", "main"], { allowFailure: true });
 
   if (rebase.status) {
-    console.log("Rebase onto main conflicted and is still in progress. Resolve/finish it, or abort/rework, then run `h-change review start`.");
+    console.log("Rebase onto main conflicted and is still in progress. Resolve the conflict (do not just abort), then run `h-change review start`.");
   } else if (before !== text("git", ["rev-parse", "HEAD"])) {
     console.log("`main` moved; branch was replayed and needs re-verification. Run `h-change review start`.");
   } else {
