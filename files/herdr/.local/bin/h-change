@@ -12,7 +12,7 @@ const AGENTS = {
   create: D_HIGH,
   explore: D_HIGH,
   apply: D_HIGH,
-  failedRebase: D_MID,
+  fixNeeded: D_MID,
   review: D_MID,
   archive: D_LOW,
 };
@@ -223,7 +223,7 @@ async function reviewStart() {
     await startAgent(
       reviewPane,
       "Fix `mise run check`, commit, then run `h-change review start`.",
-      AGENTS.failedRebase
+      AGENTS.fixNeeded
     );
     return;
   }
@@ -356,7 +356,7 @@ async function handleMovedMain(followUp) {
 
   await startMainAgent(
     `${prompt}\n\nAfter fixes run \`h-change review start\`.${followUp ? `\n\n${followUp}` : ""}`,
-    AGENTS.failedRebase
+    AGENTS.fixNeeded
   );
   return true;
 }
@@ -368,7 +368,7 @@ async function prepareForMerge(label, followUp = "") {
   if (run("mise", ["run", "check"], { allowFailure: true }).status) {
     await startMainAgent(
       "Fix `mise run check`, commit, then run `h-change review start`.",
-      AGENTS.failedRebase
+      AGENTS.fixNeeded
     );
     return;
   }
