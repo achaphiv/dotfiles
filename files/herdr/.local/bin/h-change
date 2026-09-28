@@ -223,6 +223,10 @@ async function reviewStart() {
   const mainTab = tabs().find((tab) => tab.label === "main");
   const recursive = pane?.tab_id === mainTab?.tab_id;
 
+  if (!recursive) {
+    closeOldTabs();
+  }
+
   const reviewPane = createMainPane();
   if (!reviewPane) throw new Error("herdr returned no review pane_id");
 
