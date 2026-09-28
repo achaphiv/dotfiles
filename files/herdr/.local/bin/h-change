@@ -1,42 +1,453 @@
-#!/usr/bin/env bash
+#!/usr/bin/env node
+// @ts-check
 
-set -euo pipefail
+const { spawnSync } = require("node:child_process");
+const fs = require("node:fs");
 
-if (( $# == 0 )); then
-  printf 'usage: h-change COMMAND...\n' >&2
-  exit 64
-fi
+const D_LOW = "openai-codex/gpt-6-luna:high"
+const D_MID = "openai-codex/gpt-6-luna:xhigh"
+const D_HIGH = "openai-codex/gpt-6-luna:max"
 
-if ! git rebase main; then
-  printf 'h-change: rebase onto main failed; resolve the conflicts or run `git rebase --abort`, then rerun\n' >&2
-  exit 1
-fi
+const MODELS = {
+  create: D_HIGH,
+  explore: D_HIGH,
+  main: D_HIGH,
+  review: D_MID,
+  archive: D_LOW,
+};
 
-h-close-old
+const HELP = `usage: h-change create PROMPT...
+       h-change review <start|done>
+       h-change openspec explore COMMAND...
+       h-change openspec apply
+       h-change openspec archive [AGENT_FOLLOW_UP]
+       h-change merge [AGENT_FOLLOW_UP]
+       h-change --help
 
-prompt="$*"
+  create            Start a change from a natural-language request.
+  review start      Rebase onto main and review in the main tab.
+  review done       Finalize after verifying main has not moved.
+  openspec explore  Explore an OpenSpec change request.
+  openspec apply    Apply the current OpenSpec change.
+  openspec archive  Archive the current OpenSpec change.
+  merge             Verify and merge the branch into main.
+`;
 
-mkdir -p tmp
-rm -f -- "./tmp/state.md"
-printf 'Original request: %s\n' "$prompt" > ./tmp/state.md
+const REVIEW_PROMPT = `Recursive review/fix pass; converge and stop when progress stalls.
 
-model=openai-codex/gpt-6-sol:high
-#model=openai-codex/gpt-6-luna:max
+State file: \`./tmp/state.md\`
 
-exec h-main-run pi \
-"$prompt "'
+Read/update it
+each round; never delete it. Store the problem summary, round, prior/current verified-NEW
+finding counts, scope of changes, and fixes.
 
-Choose `<TYPE>/<CHANGE_NAME>` (`feat`, `fix`, `refactor`, etc.) and run:
+Launch 2 read-only adversarial review subagents to concurrently analyze this branch
+and search for substantive changes. Ensure they are non-blocking and run in the background.
+They should suggest improvements for simplification or outright removal when possible.
+Avoid feature scope creep. Restrict the analysis to changed commits and original intention.
 
-```bash
+Substantive: potential simplification, bugs, security, data integrity, compatibility,
+material performance, failed tests, dead code, or unmet acceptance criteria.
+
+Minor: docs, style, naming, formatting, or behavior-neutral cleanup.
+
+Wait for and read all reports, then deduplicate them. Findings must be
+concrete, reproducible, and branch-introduced. Label each NEW, DUPLICATE,
+ALREADY_FIXED, SPECULATIVE, or MINOR.
+
+Count only verified NEW substantive findings. Fix and commit only those;
+run relevant tests/builds, then update the state file. Delete reports only
+after recording the summary.
+
+Recurse only when no prior round is recorded in
+the state file, or when this round made changes.
+
+Always run one of these commands:
+
+- If recurse: \`h-change review start\`
+- Else: \`h-change review done\`
+`
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+function run(command, args = [], { cwd, input, capture = false, allowFailure = false } = {}) {
+  const result = spawnSync(command, args, {
+    cwd,
+    input,
+    encoding: input == null ? "utf8" : undefined,
+    stdio: capture ? ["inherit", "pipe", "pipe"] : input == null ? "inherit" : ["pipe", "ignore", "ignore"],
+  });
+
+  if (!allowFailure && (result.error || result.status)) {
+    const message = [result.stdout, result.stderr, result.error?.message]
+      .filter(Boolean)
+      .join("")
+      .trim();
+    throw new Error(message || `${command} exited with status ${result.status ?? 1}`);
+  }
+
+  return result;
+}
+
+function text(command, args, cwd) {
+  return run(command, args, { capture: true, cwd }).stdout.trim();
+}
+
+function herdr(args) {
+  return JSON.parse(text("herdr", args));
+}
+
+function workspaceId() {
+  const id = process.env.HERDR_WORKSPACE_ID;
+  if (!id) throw new Error("HERDR_WORKSPACE_ID is not set");
+  return id;
+}
+
+function tabs() {
+  return herdr(["tab", "list", "--workspace", workspaceId()])?.result?.tabs || [];
+}
+
+function closeOldTabs() {
+  for (const tab of tabs()) {
+    const label = tab.label || "";
+    if (label === "main" || label === "reviews" || label.startsWith("feedback-")) {
+      run("herdr", ["tab", "close", tab.tab_id]);
+    }
+  }
+}
+
+function renameWorkspace(name) {
+  run("herdr", ["workspace", "rename", workspaceId(), name]);
+}
+
+async function startAgent(name, paneId, prompt, model) {
+  for (let attempt = 0; attempt < 60; attempt++) {
+    const started = run(
+      "herdr",
+      ["agent", "start", name, "--kind", "pi", "--pane", paneId, "--", "--model", model],
+      { capture: true, allowFailure: true },
+    );
+
+    if (!started.status) {
+      run("herdr", ["agent", "prompt", name, prompt], { capture: true });
+      return;
+    }
+
+    const error = `${started.stdout || ""}${started.stderr || ""}${started.error?.message || ""}`;
+    if (!error.includes("agent_pane_busy") || attempt === 59) {
+      throw new Error(error.trim() || `failed to start ${name}`);
+    }
+    await sleep(1000);
+  }
+}
+
+function createMainPane() {
+  const workspace = workspaceId();
+  const mainTab = tabs().find((tab) => tab.label === "main");
+
+  if (!mainTab) {
+    return herdr([
+      "tab", "create", "--workspace", workspace,
+      "--cwd", process.cwd(), "--label", "main", "--no-focus",
+      "--env", "SHELL=/bin/bash",
+    ])?.result?.root_pane?.pane_id;
+  }
+
+  const panes = herdr(["pane", "list", "--workspace", workspace])?.result?.panes || [];
+  const parent = panes.find((pane) => pane.tab_id === mainTab.tab_id)?.pane_id;
+  if (!parent) throw new Error("main tab has no pane");
+
+  return herdr([
+    "pane", "split", parent, "--direction", "down",
+    "--cwd", process.cwd(), "--no-focus", "--env", "SHELL=/bin/bash",
+  ])?.result?.pane?.pane_id;
+}
+
+async function startMainAgent(prompt, model = MODELS.main) {
+  const paneId = createMainPane();
+  if (!paneId) throw new Error("herdr returned no pane_id");
+  await startAgent(`main-${process.pid}-${Date.now()}`, paneId, prompt, model);
+}
+
+function rebaseOntoMain(label, abortOnFailure = false) {
+  const result = run("git", ["rebase", "main"], { allowFailure: true });
+  if (!result.status) return true;
+
+  if (abortOnFailure) {
+    run("git", ["rebase", "--abort"], { allowFailure: true });
+    return false;
+  }
+
+  throw new Error(
+    `${label}: rebase onto main failed; resolve conflicts or run \`git rebase --abort\`, then rerun`,
+  );
+}
+
+async function createChange(words) {
+  if (!words.length) {
+    throw Object.assign(new Error("usage: h-change create PROMPT..."), { code: 64 });
+  }
+
+  rebaseOntoMain("h-change create");
+  closeOldTabs();
+
+  fs.mkdirSync("tmp", { recursive: true });
+  fs.rmSync("tmp/state.md", { force: true });
+  fs.writeFileSync("tmp/state.md", `Original request: ${words.join(" ")}\n`);
+
+  const prompt = `${words.join(" ")}\n\nChoose <TYPE>/<CHANGE_NAME> (feat, fix, refactor, etc.) and run:
+
+\`\`\`bash
 git checkout -b <TYPE>/<CHANGE_NAME>
 herdr workspace rename $HERDR_WORKSPACE_ID <CHANGE_NAME>
-```
+\`\`\`
 
 Ask questions if unclear.
 
 Once the intention is fully clarified, implement with commits.
 
-Afterwards, run: `h-review-this-branch`
-' \
-  --model "$model"
+Afterwards, run: \`h-change review start\`
+`;
+
+  await startMainAgent(prompt, MODELS.create);
+}
+
+async function reviewStart() {
+  rebaseOntoMain("", true);
+
+  const sourcePane = process.env.HERDR_PANE_ID;
+  if (!sourcePane) throw new Error("HERDR_PANE_ID is not set");
+
+  const pane = (herdr(["pane", "list", "--workspace", workspaceId()])?.result?.panes || [])
+    .find((pane) => pane.pane_id === sourcePane);
+  const mainTab = tabs().find((tab) => tab.label === "main");
+  const recursive = pane?.tab_id === mainTab?.tab_id;
+
+  const reviewPane = createMainPane();
+  if (!reviewPane) throw new Error("herdr returned no review pane_id");
+
+  await startAgent(
+    `feedback-${process.pid}-${Date.now()}`,
+    reviewPane,
+    REVIEW_PROMPT,
+    MODELS.review,
+  );
+
+  if (recursive) {
+    await sleep(5000);
+    run("herdr", ["pane", "close", sourcePane]);
+  }
+}
+
+function completionChime() {
+  const rate = 44_100;
+  const samples = rate * 2;
+  const buffer = Buffer.alloc(44 + samples * 2);
+  const notes = [
+    [0, 0.35, 523], [0.23, 0.4, 659],
+    [0.48, 0.45, 784], [0.76, 1.1, 1047],
+  ];
+
+  buffer.write("RIFF");
+  buffer.writeUInt32LE(36 + samples * 2, 4);
+  buffer.write("WAVE", 8);
+  buffer.write("fmt ", 12);
+  buffer.writeUInt32LE(16, 16);
+  buffer.writeUInt16LE(1, 20);
+  buffer.writeUInt16LE(1, 22);
+  buffer.writeUInt32LE(rate, 24);
+  buffer.writeUInt32LE(rate * 2, 28);
+  buffer.writeUInt16LE(2, 32);
+  buffer.writeUInt16LE(16, 34);
+  buffer.write("data", 36);
+  buffer.writeUInt32LE(samples * 2, 40);
+
+  for (let i = 0; i < samples; i++) {
+    const t = i / rate;
+    let sample = 0;
+
+    for (const [start, length, frequency] of notes) {
+      const p = t - start;
+      if (p >= 0 && p < length) {
+        const envelope = Math.min(1, p / 0.02, (length - p) / 0.3);
+        sample += Math.sin(2 * Math.PI * frequency * p) * envelope * 0.32;
+      }
+    }
+
+    buffer.writeInt16LE(Math.round(Math.tanh(sample) * 30_000), 44 + i * 2);
+  }
+
+  return buffer;
+}
+
+function playCompletionSound() {
+  if (process.platform !== "linux") return;
+
+  const result = run("wpctl", ["get-volume", "@DEFAULT_AUDIO_SINK@"], {
+    capture: true,
+    allowFailure: true,
+  });
+  const systemVolume = +(result.stdout || "").match(/[\d.]+/)?.[0];
+  if (systemVolume === 0) return;
+
+  const volume = Number.isFinite(systemVolume) ? Math.min(1000, 69 / systemVolume) : 69;
+  run(
+    "mpv",
+    ["--no-video", "--really-quiet", "--volume-max=1000", `--volume=${volume}`, "-"],
+    { input: completionChime(), allowFailure: true },
+  );
+}
+
+function reviewDone() {
+  const before = text("git", ["rev-parse", "HEAD"]);
+  const rebase = run("git", ["rebase", "main"], { allowFailure: true });
+
+  if (rebase.status) {
+    console.log("Rebase onto main conflicted and is still in progress. Resolve/finish it, or abort/rework, then run `h-change review start`.");
+  } else if (before !== text("git", ["rev-parse", "HEAD"])) {
+    console.log("`main` moved; branch was replayed and needs re-verification. Run `h-change review start`.");
+  } else {
+    playCompletionSound();
+    console.log("Review complete.");
+  }
+}
+
+async function openspecExplore(words) {
+  if (!words.length) throw Object.assign(new Error("usage: h-change openspec explore COMMAND..."), { code: 64 });
+
+  rebaseOntoMain("h-change openspec explore");
+  closeOldTabs();
+  renameWorkspace("~~explore~~");
+  await startMainAgent(
+    `/skill:openspec-explore ${words.join(" ")}\n\nPrefer multiple smaller OpenSpec changes, each on its own branch from main; number ordered branches. No worktrees.`,
+    MODELS.explore,
+  );
+}
+
+async function openspecApply() {
+  rebaseOntoMain("h-change openspec apply");
+  fs.mkdirSync("tmp", { recursive: true });
+  fs.rmSync("tmp/state.md", { force: true });
+  closeOldTabs();
+  renameWorkspace(`AP ${text("git", ["symbolic-ref", "--short", "HEAD"])}`);
+  await startMainAgent(
+    "/skill:openspec-apply-change\n\nSplit/delegate work where useful. Implement with commits. When complete run `h-change review start`.",
+  );
+}
+
+function currentBranch(label) {
+  const branch = text("git", ["branch", "--show-current"]);
+  if (!branch) throw new Error(`${label}: HEAD is detached`);
+  if (branch === "main") throw new Error(`${label}: already on main`);
+  if (text("git", ["status", "--porcelain"])) {
+    throw new Error(`${label}: uncommitted changes; commit or stash them`);
+  }
+  return branch;
+}
+
+async function handleMovedMain(followUp) {
+  const upToDate = !run("git", ["merge-base", "--is-ancestor", "main", "HEAD"], {
+    allowFailure: true,
+  }).status;
+  if (upToDate) return false;
+
+  const rebased = !run("git", ["rebase", "main"], { allowFailure: true }).status;
+  const prompt = rebased
+    ? "`main` moved; branch was replayed and needs re-verification."
+    : "Rebase onto main conflicted. Resolve it and finish, or abort/rework the branch.";
+
+  await startMainAgent(
+    `${prompt}\n\nAfter fixes run \`h-change review start\`.${followUp ? `\n\n${followUp}` : ""}`,
+  );
+  return true;
+}
+
+async function prepareForMerge(label, followUp = "") {
+  const branch = currentBranch(label);
+  if (await handleMovedMain(followUp)) return;
+
+  if (run("mise", ["run", "check"], { allowFailure: true }).status) {
+    await startMainAgent("Fix `mise run check`, commit, then run `h-change review start`.");
+    return;
+  }
+
+  run("mise", ["run", "test"]);
+  if (!run("mise", ["run", "format"], { allowFailure: true }).status) {
+    run("git", ["add", "-u"]);
+    run("git", ["commit", "-m", "style: `mise run format`"], { allowFailure: true });
+  }
+
+  return branch;
+}
+
+async function openspecArchive(followUp = "") {
+  closeOldTabs();
+  const branch = await prepareForMerge("h-change openspec archive", followUp);
+  if (!branch) return;
+
+  renameWorkspace(`AR ${branch}`);
+  await startMainAgent(
+    "/skill:openspec-archive-change\n\nSync specs automatically; use judgement and ask only for severe issues. Commit, then run `h-change merge`.",
+    MODELS.archive,
+  );
+}
+
+function mainWorktree() {
+  let worktree = "";
+  for (const line of text("git", ["worktree", "list", "--porcelain"]).split("\n")) {
+    if (line.startsWith("worktree ")) worktree = line.slice(9);
+    else if (line === "branch refs/heads/main") return worktree;
+  }
+  return "";
+}
+
+function finishChange() {
+  fs.rmSync("tmp/state.md", { force: true });
+  renameWorkspace("_");
+  closeOldTabs();
+}
+
+async function mergeChange(followUp = "") {
+  const branch = await prepareForMerge("h-change merge", followUp);
+  if (!branch) return;
+
+  let worktree = mainWorktree();
+  const hadMainWorktree = Boolean(worktree);
+  if (!worktree) {
+    run("git", ["checkout", "main"]);
+    worktree = text("git", ["rev-parse", "--show-toplevel"]);
+  }
+
+  const merged = run("git", ["-C", worktree, "merge", "--no-ff", "--no-edit", branch], {
+    allowFailure: true,
+  });
+  if (merged.status) {
+    throw new Error(`h-change merge: merging \`${branch}\` into main at ${worktree} failed`);
+  }
+
+  if (hadMainWorktree) run("git", ["checkout", "--detach", "main"]);
+  run("git", ["branch", "--delete", branch]);
+  finishChange();
+}
+
+async function main() {
+  const args = process.argv.slice(2);
+  const command = args.slice(0, 2).join(" ");
+
+  if (args.length === 1 && ["-h", "--help", "help"].includes(args[0])) return process.stdout.write(HELP);
+  if (args[0] === "create") return createChange(args.slice(1));
+  if (command === "review start" && args.length === 2) return reviewStart();
+  if (command === "review done" && args.length === 2) return reviewDone();
+  if (command === "openspec explore") return openspecExplore(args.slice(2));
+  if (command === "openspec apply" && args.length === 2) return openspecApply();
+  if (command === "openspec archive" && args.length < 4) return openspecArchive(args[2] || "");
+  if (args[0] === "merge" && args.length < 3) return mergeChange(args[1] || "");
+
+  process.stderr.write(HELP);
+  process.exitCode = 64;
+}
+
+main().catch((error) => {
+  process.stderr.write(`h-change: ${error?.message || error}\n`);
+  process.exitCode = error?.code || 1;
+});
