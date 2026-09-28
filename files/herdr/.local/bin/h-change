@@ -357,7 +357,10 @@ async function prepareForMerge(label, followUp = "") {
   if (await handleMovedMain(followUp)) return;
 
   if (run("mise", ["run", "check"], { allowFailure: true }).status) {
-    await startMainAgent("Fix `mise run check`, commit, then run `h-change review start`.");
+    await startMainAgent(
+      "Fix `mise run check`, commit, then run `h-change review start`.",
+      AGENTS.failedRebase
+    );
     return;
   }
 
