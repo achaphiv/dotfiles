@@ -391,7 +391,6 @@ function mainWorktree() {
 function finishChange() {
   fs.rmSync("tmp/state.md", { force: true });
   renameWorkspace("_");
-  closeOldTabs();
 }
 
 async function mergeChange(followUp = "") {
