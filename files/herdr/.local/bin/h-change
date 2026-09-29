@@ -43,15 +43,15 @@ function piAgent(model) {
 
 const D_LOW = { command: piAgent("openai-codex/gpt-6-luna:high") };
 const D_MID = { command: piAgent("openai-codex/gpt-6-luna:xhigh") };
-// const D_HIGH = { command: piAgent("openai-codex/gpt-6-luna:max") };
-const D_HIGH = { command: piAgent("openai-codex/gpt-6-sol:high") };
+const D_HIGH = { command: piAgent("openai-codex/gpt-6-luna:max") };
+const D_VERY_HIGH = { command: piAgent("openai-codex/gpt-6-sol:high") };
 
 const AGENTS = {
-  create: D_HIGH,
-  explore: D_HIGH,
-  apply: D_HIGH,
+  create: D_VERY_HIGH,
+  explore: D_VERY_HIGH,
+  apply: D_VERY_HIGH,
   fixNeeded: D_MID,
-  review: D_MID,
+  review: D_HIGH,
   archive: D_LOW,
 };
 
