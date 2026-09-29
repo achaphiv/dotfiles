@@ -29,6 +29,7 @@ const HELP = `usage: h-change create PROMPT...
        h-change openspec apply
        h-change openspec archive
        h-change merge
+       h-change cancel
        h-change --help
 
   create            Start a change from a natural-language request.
@@ -38,6 +39,7 @@ const HELP = `usage: h-change create PROMPT...
   openspec apply    Apply the current OpenSpec change.
   openspec archive  Archive the current OpenSpec change.
   merge             Verify and merge the branch into main.
+  cancel            Discard the current change branch and return to main.
 `;
 
 const REVIEW_PROMPT = `Recursive review/fix pass; converge and stop when progress stalls.
@@ -440,6 +442,29 @@ async function mergeChange() {
   finishChange();
 }
 
+function cancelChange() {
+  const branch = text("git", ["branch", "--show-current"]);
+
+  if (!branch) {
+    throw new Error("h-change cancel: HEAD is detached; check out the change branch, then rerun");
+  }
+  if (branch === "main") {
+    throw new Error("h-change cancel: already on `main`; nothing to cancel");
+  }
+
+  // A herdr workspace is usually a linked worktree while `main` stays checked out in the source
+  // checkout, so use a detached checkout here when the branch is already occupied elsewhere.
+  if (mainWorktree()) {
+    run("git", ["checkout", "--detach", "--force", "main"]);
+  } else {
+    run("git", ["checkout", "--force", "main"]);
+  }
+
+  // Cancellation intentionally discards the branch, even when it has not been merged.
+  run("git", ["branch", "--delete", "--force", branch]);
+  finishChange();
+}
+
 async function main() {
   const args = process.argv.slice(2);
   const command = args.slice(0, 2).join(" ");
@@ -454,6 +479,7 @@ async function main() {
   if (command === "openspec apply" && args.length === 2) return openspecApply();
   if (command === "openspec archive" && args.length === 2) return openspecArchive();
   if (args[0] === "merge" && args.length === 1) return mergeChange();
+  if (args[0] === "cancel" && args.length === 1) return cancelChange();
 
   process.stderr.write(HELP);
   process.exitCode = 64;
