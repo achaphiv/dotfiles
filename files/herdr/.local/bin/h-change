@@ -377,7 +377,7 @@ async function prepareForMerge(label, followUp = "") {
   const branch = currentBranch(label);
   if (await handleMovedMain(followUp)) return;
 
-  if (run("mise", ["run", "check"], { allowFailure: true }).status) {
+  if (run("mise", ["run", "--silent", "check"], { allowFailure: true }).status) {
     await startMainAgent(
       "Fix `mise run check`, commit, then run `h-change review start`.",
       AGENTS.fixNeeded
@@ -385,8 +385,8 @@ async function prepareForMerge(label, followUp = "") {
     return;
   }
 
-  run("mise", ["run", "test"]);
-  if (!run("mise", ["run", "format"], { allowFailure: true }).status) {
+  run("mise", ["run", "--silent", "test"]);
+  if (!run("mise", ["run", "--silent", "format"], { allowFailure: true }).status) {
     run("git", ["add", "-u"]);
     run("git", ["commit", "-m", "style: `mise run format`"], { allowFailure: true });
   }
