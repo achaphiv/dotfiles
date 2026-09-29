@@ -39,7 +39,7 @@ const REVIEW_PROMPT = `Recursive review/fix pass; converge and stop when progres
 State file: \`./tmp/state.md\`
 
 Read/update it
-each round; never delete it. Store the problem summary, round, prior/current verified-NEW
+each round; never commit it. Store the problem summary, round, prior/current verified-NEW
 finding counts, scope of changes, and fixes.
 
 Launch 2 read-only adversarial review subagents to concurrently analyze this branch
