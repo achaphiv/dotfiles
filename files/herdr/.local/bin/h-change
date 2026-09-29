@@ -27,8 +27,8 @@ const HELP = `usage: h-change create PROMPT...
        h-change review <start|done>
        h-change openspec explore COMMAND...
        h-change openspec apply
-       h-change openspec archive [AGENT_FOLLOW_UP]
-       h-change merge [AGENT_FOLLOW_UP]
+       h-change openspec archive
+       h-change merge
        h-change --help
 
   create            Start a change from a natural-language request.
@@ -352,7 +352,7 @@ function currentBranch(label) {
   return branch;
 }
 
-async function handleMovedMain(followUp) {
+async function handleMovedMain() {
   const upToDate = !run("git", ["merge-base", "--is-ancestor", "main", "HEAD"], {
     allowFailure: true,
   }).status;
@@ -364,15 +364,15 @@ async function handleMovedMain(followUp) {
     : "Rebase onto main conflicted. Resolve it and finish, or abort/rework the branch.";
 
   await startMainAgent(
-    `${prompt}\n\nAfter fixes run \`h-change review start\`.${followUp ? `\n\n${followUp}` : ""}`,
+    `${prompt}\n\nAfter fixes run \`h-change review start\`.`,
     AGENTS.fixNeeded
   );
   return true;
 }
 
-async function prepareForMerge(label, followUp = "") {
+async function prepareForMerge(label) {
   const branch = currentBranch(label);
-  if (await handleMovedMain(followUp)) return;
+  if (await handleMovedMain()) return;
 
   if (run("mise", ["run", "--silent", "check"], { allowFailure: true }).status) {
     await startMainAgent(
@@ -391,9 +391,9 @@ async function prepareForMerge(label, followUp = "") {
   return branch;
 }
 
-async function openspecArchive(followUp = "") {
+async function openspecArchive() {
   closeOldTabs();
-  const branch = await prepareForMerge("h-change openspec archive", followUp);
+  const branch = await prepareForMerge("h-change openspec archive");
   if (!branch) return;
 
   renameWorkspace(`AR ${branch}`);
@@ -417,8 +417,8 @@ function finishChange() {
   renameWorkspace("_");
 }
 
-async function mergeChange(followUp = "") {
-  const branch = await prepareForMerge("h-change merge", followUp);
+async function mergeChange() {
+  const branch = await prepareForMerge("h-change merge");
   if (!branch) return;
 
   let worktree = mainWorktree();
@@ -452,8 +452,8 @@ async function main() {
   if (command === "review done" && args.length === 2) return reviewDone();
   if (command === "openspec explore") return openspecExplore(args.slice(2));
   if (command === "openspec apply" && args.length === 2) return openspecApply();
-  if (command === "openspec archive" && args.length < 4) return openspecArchive(args[2] || "");
-  if (args[0] === "merge" && args.length < 3) return mergeChange(args[1] || "");
+  if (command === "openspec archive" && args.length === 2) return openspecArchive();
+  if (args[0] === "merge" && args.length === 1) return mergeChange();
 
   process.stderr.write(HELP);
   process.exitCode = 64;
