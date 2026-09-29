@@ -4,9 +4,18 @@
 const { spawnSync } = require("node:child_process");
 const fs = require("node:fs");
 
-const D_LOW = { command: "pi --model openai-codex/gpt-6-luna:high" };
-const D_MID = { command: "pi --model openai-codex/gpt-6-luna:xhigh" };
-const D_HIGH = { command: "pi --model openai-codex/gpt-6-luna:max" };
+// Use `vibepod` + `podman`
+const IN_SANDBOX = "mise x -- env DOCKER_HOST=unix:///run/user/$(id -u)/podman/podman.sock vp"
+
+function piAgent(model) {
+  // return `${IN_SANDBOX} pi --model ${model}`
+  return `pi --model ${model}`
+}
+
+const D_LOW = { command: piAgent("openai-codex/gpt-6-luna:high") };
+const D_MID = { command: piAgent("openai-codex/gpt-6-luna:xhigh") };
+// const D_HIGH = { command: piAgent("openai-codex/gpt-6-luna:max") };
+const D_HIGH = { command: piAgent("openai-codex/gpt-6-sol:high") };
 
 const AGENTS = {
   create: D_HIGH,
