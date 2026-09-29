@@ -9,18 +9,20 @@ function piAgent(model) {
   // return `pi --model ${model}`
 }
 
-const D_LOW = { command: piAgent("openai-codex/gpt-6-luna:high") };
-const D_MID = { command: piAgent("openai-codex/gpt-6-luna:xhigh") };
-const D_HIGH = { command: piAgent("openai-codex/gpt-6-luna:max") };
-const D_VERY_HIGH = { command: piAgent("openai-codex/gpt-6-sol:high") };
+const AGENT = {
+  LOW: { command: piAgent("openai-codex/gpt-6-luna:high") },
+  MID: { command: piAgent("openai-codex/gpt-6-luna:xhigh") },
+  HIGH: { command: piAgent("openai-codex/gpt-6-luna:max") },
+  VERY_HIGH: { command: piAgent("openai-codex/gpt-6.1-sol:high") },
+}
 
 const AGENTS = {
-  create: D_VERY_HIGH,
-  explore: D_VERY_HIGH,
-  apply: D_VERY_HIGH,
-  fixNeeded: D_MID,
-  review: D_HIGH,
-  archive: D_LOW,
+  create: AGENT.VERY_HIGH,
+  explore: AGENT.VERY_HIGH,
+  apply: AGENT.VERY_HIGH,
+  fixNeeded: AGENT.MID,
+  review: AGENT.HIGH,
+  archive: AGENT.LOW,
 };
 
 const HELP = `usage: h-change create PROMPT...
