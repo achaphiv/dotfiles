@@ -51,7 +51,7 @@ each round; never commit it. Store the problem summary, round, prior/current ver
 finding counts, scope of changes, and fixes.
 
 Launch 2 read-only adversarial review subagents to concurrently analyze this branch
-and search for substantive changes. Ensure they are non-blocking and run in the background.
+and search for substantive changes.
 They should suggest improvements for simplification or outright removal when possible.
 Avoid feature scope creep. Restrict the analysis to changed commits and original intention.
 
