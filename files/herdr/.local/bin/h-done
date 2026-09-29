@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-set -euo pipefail
-
-rm ./tmp/state.md || true
-herdr workspace rename "$HERDR_WORKSPACE_ID" _
-h-close-old
