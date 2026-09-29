@@ -233,15 +233,14 @@ async function reviewStart() {
   if (!reviewPane) throw new Error("herdr returned no review pane_id");
 
   if (run("mise", ["run", "check"], { allowFailure: true }).status) {
-    await startAgent(
+    startAgent(
       reviewPane,
       "Fix `mise run check`, commit, then run `h-change review start`.",
       AGENTS.fixNeeded
     );
-    return;
+  } else {
+    startAgent(reviewPane, REVIEW_PROMPT, AGENTS.review);
   }
-
-  startAgent(reviewPane, REVIEW_PROMPT, AGENTS.review);
 
   if (recursive) {
     await sleep(5000);
