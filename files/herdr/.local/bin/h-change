@@ -42,39 +42,38 @@ const HELP = `usage: h-change create PROMPT...
   cancel            Discard the current change branch and return to main.
 `;
 
-const REVIEW_PROMPT = `Recursive review/fix pass; converge and stop when progress stalls.
+const REVIEW_PROMPT = `Do a single review + fix pass.
 
 State file: \`./tmp/state.md\`
 
-Read/update it
-each round; never commit it. Store the problem summary, round, prior/current verified-NEW
-finding counts, scope of changes, and fixes.
+Read it for context.
 
 Launch 2 read-only adversarial review subagents to concurrently analyze this branch
-and search for substantive changes.
-They should suggest improvements for simplification or outright removal when possible.
-Avoid feature scope creep. Restrict the analysis to changed commits and original intention.
+for possible changes.
+Avoid feature scope creep. Restrict analysis to changed commits and original intention.
+Find improvements for simplification or outright removal when possible.
 
-Substantive: potential simplification, bugs, security, data integrity, compatibility,
+Categorize findings as NEW, DUPLICATE, ALREADY_FIXED, SPECULATIVE, or MINOR.
+
+Keep only verified NEW substantive findings.
+Each must be concrete, reproducible, and branch-introduced.
+
+- Substantive: potential simplification, bugs, security, data integrity, compatibility,
 material performance, failed tests, dead code, or unmet acceptance criteria.
+- Minor: docs, style, naming, formatting, or behavior-neutral cleanup.
 
-Minor: docs, style, naming, formatting, or behavior-neutral cleanup.
+Fix and commit.
 
-Wait for and read all reports, then deduplicate them. Findings must be
-concrete, reproducible, and branch-introduced. Label each NEW, DUPLICATE,
-ALREADY_FIXED, SPECULATIVE, or MINOR.
+Then update the state file.
+Store the problem summary, round, prior/current verified-NEW finding counts, scope of changes, and fixes.
 
-Count only verified NEW substantive findings. Fix and commit only those;
-run relevant tests/builds, then update the state file. Delete reports only
-after recording the summary.
-
-Recurse only when no prior round is recorded in
-the state file, or when this round made changes.
+Recurse on first run (empty state file) or when this round made changes.
+Stop when progress stalls.
 
 Always run one of these commands:
 
-- If recurse: \`h-change review start\`
-- Else: \`h-change review done\`
+- Continue next round: \`h-change review start\`
+- Stop: \`h-change review done\`
 `
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
