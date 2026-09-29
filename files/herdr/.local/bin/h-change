@@ -327,7 +327,7 @@ async function openspecExplore(words) {
   closeOldTabs();
   renameWorkspace("~~explore~~");
   await startMainAgent(
-    `/skill:openspec-explore ${words.join(" ")}\n\nPrefer multiple smaller OpenSpec changes, each on its own branch from main; append '-<GROUP_ID>-<ORDER>' postfix to branch names. No worktrees.`,
+    `/skill:openspec-explore ${words.join(" ")}\n\nPrefer multiple smaller OpenSpec changes, each on its own branch from main; when multiple branches, append '-<GENERATED_GROUP_ID>-<BRANCH_ORDER>' postfix to branch names. No worktrees.`,
     AGENTS.explore,
   );
 }
