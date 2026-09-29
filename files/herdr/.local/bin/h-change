@@ -444,7 +444,9 @@ async function main() {
   const args = process.argv.slice(2);
   const command = args.slice(0, 2).join(" ");
 
-  if (args.length === 1 && ["-h", "--help", "help"].includes(args[0])) return process.stdout.write(HELP);
+  if (args.includes("--help") || (args.length === 1 && ["-h", "help"].includes(args[0]))) {
+    return process.stdout.write(HELP);
+  }
   if (args[0] === "create") return createChange(args.slice(1));
   if (command === "review start" && args.length === 2) return reviewStart();
   if (command === "review done" && args.length === 2) return reviewDone();
