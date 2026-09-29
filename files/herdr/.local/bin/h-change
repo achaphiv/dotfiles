@@ -94,6 +94,11 @@ function text(command, args, cwd) {
   return run(command, args, { capture: true, cwd }).stdout.trim();
 }
 
+function clearTmp() {
+  fs.rmSync("tmp", { recursive: true, force: true });
+  fs.mkdirSync("tmp", { recursive: true });
+}
+
 function herdr(args) {
   return JSON.parse(text("herdr", args));
 }
@@ -180,8 +185,7 @@ async function createChange(words) {
   rebaseOntoMain("h-change create");
   closeOldTabs();
 
-  fs.mkdirSync("tmp", { recursive: true });
-  fs.rmSync("tmp/state.md", { force: true });
+  clearTmp();
   fs.writeFileSync("tmp/state.md", `Original request: ${words.join(" ")}\n`);
 
   const prompt = `${words.join(" ")}\n\nChoose <TYPE>/<CHANGE_NAME> (feat, fix, refactor, etc.) and run:
@@ -323,8 +327,7 @@ async function openspecExplore(words) {
 
 async function openspecApply() {
   rebaseOntoMain("h-change openspec apply");
-  fs.mkdirSync("tmp", { recursive: true });
-  fs.rmSync("tmp/state.md", { force: true });
+  clearTmp();
   closeOldTabs();
   renameWorkspace(`AP ${text("git", ["symbolic-ref", "--short", "HEAD"])}`);
   await startMainAgent(
@@ -404,7 +407,7 @@ function mainWorktree() {
 }
 
 function finishChange() {
-  fs.rmSync("tmp/state.md", { force: true });
+  clearTmp();
   renameWorkspace("_");
 }
 
