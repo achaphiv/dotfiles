@@ -4,12 +4,41 @@
 const { spawnSync } = require("node:child_process");
 const fs = require("node:fs");
 
-// Use `vibepod` + `podman`
-const IN_SANDBOX = "mise x -- env DOCKER_HOST=unix:///run/user/$(id -u)/podman/podman.sock vp"
+// e.g. `/home/bob/.herdr/worktrees/project/some-worktree`
+const REPO_DIR_WORKTREE = run("git", ["rev-parse", "--show-toplevel"], { capture: true }).stdout.trim()
+
+// e.g. `/home/bob/code/project/.git`
+const REPO_DIR_DOT_GIT = run("git", ["rev-parse", "--path-format=absolute", "--git-common-dir"], { capture: true }).stdout.trim()
+
+// // `vibepod`
+// const IN_SANDBOX = [
+//   "mise exec --",
+//   // Enable podman
+//   "env DOCKER_HOST=unix:///run/user/$(id -u)/podman/podman.sock",
+//   "vp run",
+//   "-v ${REPO_DIR_WORKTREE}:${REPO_DIR_WORKTREE}",
+//   "-v ${REPO_DIR_DOT_GIT}:${REPO_DIR_DOT_GIT}"
+// ].join(" ")
+
+// `bwrap`
+const IN_SANDBOX = [
+  "bwrap",
+  "--unshare-pid",
+  "--die-with-parent",
+  "--ro-bind / /",
+  "--bind ~/.pi ~/.pi",
+  "--dev /dev",
+  "--tmpfs /tmp",
+  `--bind ${REPO_DIR_WORKTREE} ${REPO_DIR_WORKTREE}`,
+  `--bind ${REPO_DIR_DOT_GIT} ${REPO_DIR_DOT_GIT}`,
+  `--chdir ${REPO_DIR_WORKTREE}`
+].join(" ")
+
+// console.log({ REPO_DIR_DOT_GIT, REPO_DIR_WORKTREE, IN_SANDBOX })
 
 function piAgent(model) {
-  // return `${IN_SANDBOX} pi --model ${model}`
-  return `pi --model ${model}`
+  return `${IN_SANDBOX} pi --model ${model}`
+  // return `pi --model ${model}`
 }
 
 const D_LOW = { command: piAgent("openai-codex/gpt-6-luna:high") };
