@@ -126,7 +126,7 @@ function tabs() {
 function closeOldTabs() {
   for (const tab of tabs()) {
     const label = tab.label || "";
-    if (label === "main" || label === "reviews" || label.startsWith("feedback-")) {
+    if (label === "main") {
       run("herdr", ["tab", "close", tab.tab_id]);
     }
   }
