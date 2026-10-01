@@ -234,6 +234,7 @@ async function reviewStart() {
   const recursive = isRecursive();
 
   if (!recursive) {
+    renameWorkspace(`RE ${text("git", ["symbolic-ref", "--short", "HEAD"])}`);
     closeOldTabs();
   }
 
