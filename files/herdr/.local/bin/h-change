@@ -215,16 +215,23 @@ Afterwards, run: \`h-change review start\`
   await startMainAgent(prompt, AGENTS.create);
 }
 
+function herdrSourcePane() {
+  const value = process.env.HERDR_PANE_ID;
+  if (!value) throw new Error("HERDR_PANE_ID is not set");
+  return value;
+}
+
+function isRecursive() {
+  const pane = (herdr(["pane", "list", "--workspace", workspaceId()])?.result?.panes || [])
+    .find((pane) => pane.pane_id === herdrSourcePane());
+  const mainTab = tabs().find((tab) => tab.label === "main");
+  return pane?.tab_id === mainTab?.tab_id;
+}
+
 async function reviewStart() {
   rebaseOntoMain("", true);
 
-  const sourcePane = process.env.HERDR_PANE_ID;
-  if (!sourcePane) throw new Error("HERDR_PANE_ID is not set");
-
-  const pane = (herdr(["pane", "list", "--workspace", workspaceId()])?.result?.panes || [])
-    .find((pane) => pane.pane_id === sourcePane);
-  const mainTab = tabs().find((tab) => tab.label === "main");
-  const recursive = pane?.tab_id === mainTab?.tab_id;
+  const recursive = isRecursive();
 
   if (!recursive) {
     closeOldTabs();
@@ -245,7 +252,8 @@ async function reviewStart() {
 
   if (recursive) {
     await sleep(5000);
-    run("herdr", ["pane", "close", sourcePane]);
+
+    run("herdr", ["pane", "close", herdrSourcePane()]);
   }
 }
 
