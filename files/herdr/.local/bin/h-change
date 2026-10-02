@@ -443,6 +443,10 @@ async function finishChange() {
 }
 
 async function mergeChange() {
+  if (!isRecursive()) {
+    closeOldTabs();
+  }
+
   const branch = await prepareForMerge("h-change merge");
   if (!branch) return;
 
