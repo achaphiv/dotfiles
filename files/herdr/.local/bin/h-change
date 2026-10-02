@@ -208,8 +208,9 @@ herdr workspace rename $HERDR_WORKSPACE_ID <CHANGE_NAME>
 Ask questions if unclear.
 
 Once the intention is fully clarified, implement with commits.
+Split/delegate work where useful.
 
-Afterwards, run: \`h-change review start\`
+After fully done implementing, run: \`h-change review start\`
 `;
 
   await startMainAgent(prompt, AGENTS.create);
