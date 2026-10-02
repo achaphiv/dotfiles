@@ -418,13 +418,17 @@ async function prepareForMerge(label) {
 }
 
 async function openspecArchive() {
+  if (isRecursive()) {
+    throw new Error("You likely wanted the `openspec-archive-change` skill rather than running this command")
+  }
+
   closeOldTabs();
   const branch = await prepareForMerge("h-change openspec archive");
   if (!branch) return;
 
   renameWorkspace(`AR ${branch}`);
   await startMainAgent(
-    "/skill:openspec-archive-change\n\nSync specs automatically; use judgement and ask only for severe issues. Commit, then run `h-change merge`.",
+    "@.agents/skills/openspec-archive-change/SKILL.md\n\nSync specs automatically unless severe issue found. Make commits. When done, run `h-change merge`.",
     AGENTS.archive,
   );
 }
