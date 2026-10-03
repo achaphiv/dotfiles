@@ -13,12 +13,13 @@ const AGENT = {
   LOW: piAgent("openai-codex/gpt-6-luna:medium"),
   MID: piAgent("openai-codex/gpt-6-luna:xhigh"),
   HIGH: piAgent("openai-codex/gpt-6-luna:max"),
-  VERY_HIGH: piAgent("openai-codex/gpt-6.1-sol:high"),
+  VERY_HIGH: piAgent("openai-codex/gpt-6-luna:max"),
+//  VERY_HIGH: piAgent("openai-codex/gpt-6.1-sol:high"),
 }
 
 const AGENTS = {
-  create: AGENT.VERY_HIGH,
   explore: AGENT.VERY_HIGH,
+  create: AGENT.VERY_HIGH,
   apply: AGENT.VERY_HIGH,
   fixNeeded: AGENT.MID,
   review: AGENT.HIGH,
