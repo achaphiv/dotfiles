@@ -356,7 +356,7 @@ async function openspecApply() {
   closeOldTabs();
   renameWorkspace(`AP ${text("git", ["symbolic-ref", "--short", "HEAD"])}`);
   await startMainAgent(
-    "/skill:openspec-apply-change\n\nSplit/delegate work where useful. Implement with commits. When complete run `h-change review start`.",
+    "/skill:openspec-apply-change\n\nSplit/delegate work where useful. Implement with commits. Prefer autonomous execution. Only stop to ask me when there's a serious issue. When complete run `h-change review start`.",
     AGENTS.apply
   );
 }
