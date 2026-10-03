@@ -442,15 +442,18 @@ function mainWorktree() {
   return "";
 }
 
-async function finishChange() {
-  clearTmp();
-  renameWorkspace("_");
-
+async function stop() {
   if (isRecursive()) {
     await sleep(5000);
 
     run("herdr", ["pane", "close", herdrSourcePane()]);
   }
+}
+
+async function finishChange() {
+  clearTmp();
+  renameWorkspace("_");
+  stop();
 }
 
 async function mergeChange() {
