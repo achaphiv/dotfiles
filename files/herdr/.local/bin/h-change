@@ -401,7 +401,7 @@ async function prepareForMerge(label) {
       "Fix `mise run check`, commit, then run `h-change review start`.",
       AGENTS.fixNeeded
     );
-    stop();
+    await stop();
   }
 
   if (run("mise", ["run", "--silent", "test"], { allowFailure: true }).status) {
@@ -409,7 +409,7 @@ async function prepareForMerge(label) {
       "Fix `mise run test`, commit, then run `h-change review start`.",
       AGENTS.fixNeeded
     );
-    stop();
+    await stop();
   }
 
   if (!run("mise", ["run", "--silent", "format"], { allowFailure: true }).status) {
@@ -456,7 +456,7 @@ async function stop() {
 async function finishChange() {
   clearTmp();
   renameWorkspace("_");
-  stop();
+  await stop();
 }
 
 async function mergeChange() {
@@ -483,10 +483,10 @@ async function mergeChange() {
 
   if (hadMainWorktree) run("git", ["checkout", "--detach", "main"]);
   run("git", ["branch", "--delete", branch]);
-  finishChange();
+  await finishChange();
 }
 
-function cancelChange() {
+async function cancelChange() {
   const branch = text("git", ["branch", "--show-current"]);
 
   if (!branch) {
@@ -506,7 +506,7 @@ function cancelChange() {
 
   // Cancellation intentionally discards the branch, even when it has not been merged.
   run("git", ["branch", "--delete", "--force", branch]);
-  finishChange();
+  await finishChange();
 }
 
 async function main() {
