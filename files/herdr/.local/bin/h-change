@@ -66,6 +66,8 @@ material performance, failed tests, dead code, or unmet acceptance criteria.
 
 Fix and commit.
 
+Prefer autonomous execution. Only stop to ask me when there's a serious issue.
+
 Then update the state file.
 Store the problem summary, round, prior/current verified-NEW finding counts, scope of changes, and fixes.
 DO NOT COMMIT THE STATE FILE.
@@ -73,7 +75,7 @@ DO NOT COMMIT THE STATE FILE.
 Recurse on first run (empty state file) or when this round made changes.
 Stop when progress stalls.
 
-Always run one of these commands:
+Run one of these commands:
 
 - Continue next round: \`h-change review start\`
 - Stop: \`h-change review done\`
