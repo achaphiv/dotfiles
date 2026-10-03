@@ -428,7 +428,7 @@ async function openspecArchive() {
 
   renameWorkspace(`AR ${branch}`);
   await startMainAgent(
-    "@.agents/skills/openspec-archive-change/SKILL.md\n\nSync specs automatically unless severe issue found. Make commits. When done, run `h-change merge`.",
+    ".agents/skills/openspec-archive-change/SKILL.md\n\nSync specs automatically unless severe issue found. Make commits. When done, run `h-change merge`.",
     AGENTS.archive,
   );
 }
