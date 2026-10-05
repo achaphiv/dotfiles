@@ -213,7 +213,9 @@ Ask questions if unclear.
 Once the intention is fully clarified, implement with commits.
 Split/delegate work where useful.
 
-After fully done implementing, run: \`h-change review start\`
+If no work was required, just stop here.
+
+Otherwise, after done implementing, run: \`h-change review start\`
 `;
 
   await startMainAgent(prompt, AGENTS.create);
