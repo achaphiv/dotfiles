@@ -45,7 +45,7 @@ const HELP = `usage: h-change create PROMPT...
   cancel            Discard the current change branch and return to main.
 `;
 
-const REVIEW_PROMPT = `Do a single review + fix pass.
+const REVIEW_PROMPT = `Do a single round of review + fix.
 
 State file: \`./tmp/state.md\`
 
