@@ -403,7 +403,7 @@ async function prepareForMerge(label) {
       "Fix `mise run check`, commit, then run `h-change review start`.",
       AGENTS.fixNeeded
     );
-    await stop();
+    return await stop();
   }
 
   if (run("mise", ["run", "--silent", "test"], { allowFailure: true }).status) {
@@ -411,7 +411,7 @@ async function prepareForMerge(label) {
       "Fix `mise run test`, commit, then run `h-change review start`.",
       AGENTS.fixNeeded
     );
-    await stop();
+    return await stop();
   }
 
   if (!run("mise", ["run", "--silent", "format"], { allowFailure: true }).status) {
