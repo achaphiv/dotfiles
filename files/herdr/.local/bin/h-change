@@ -448,6 +448,7 @@ function mainWorktree() {
 }
 
 async function stop() {
+  playCompletionSound();
   if (isRecursive()) {
     await sleep(5000);
 
