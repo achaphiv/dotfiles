@@ -9,13 +9,16 @@ function piAgent(model) {
   // return `pi --model ${model}`
 }
 
-const AGENT = {
-  LOW: piAgent("openai-codex/gpt-6-luna:medium"),
+const AGENT_OPENAI = {
+  // luna medium is too dumb
+  LOW: piAgent("openai-codex/gpt-6-luna:high"),
   MID: piAgent("openai-codex/gpt-6-luna:xhigh"),
   HIGH: piAgent("openai-codex/gpt-6-luna:max"),
-  VERY_HIGH: piAgent("openai-codex/gpt-6-luna:max"),
-//  VERY_HIGH: piAgent("openai-codex/gpt-6.1-sol:high"),
+  // VERY_HIGH: piAgent("openai-codex/gpt-6-luna:max"),
+  VERY_HIGH: piAgent("openai-codex/gpt-6.1-sol:high"),
 }
+
+const AGENT = AGENT_OPENAI
 
 const AGENTS = {
   explore: AGENT.VERY_HIGH,
