@@ -9,6 +9,21 @@ function piAgent(model) {
   // return `pi --model ${model}`
 }
 
+function opencodeAgent(model) {
+  return { command: `mise run agent-sandbox opencode mini --model ${model} --prompt ` }
+}
+
+const OPENCODE = opencodeAgent('opencode/deepseek-v4.1-flash-free')
+
+const OPEN_ROUTER =  piAgent('minimax/minimax-m3.1-flash:free')
+
+const AGENT_FREE = {
+  LOW: OPENCODE,
+  MID: OPEN_ROUTER,
+  HIGH: OPEN_ROUTER,
+  VERY_HIGH: OPENCODE,
+}
+
 const AGENT_OPENAI = {
   // luna medium is too dumb
   LOW: piAgent("openai-codex/gpt-6-luna:high"),
