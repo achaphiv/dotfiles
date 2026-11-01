@@ -351,6 +351,7 @@ function reviewDone() {
     console.log("`main` moved; branch was replayed and needs re-verification. Run `h-change review start`.");
   } else {
     playCompletionSound();
+    renameWorkspace(`REV ${text("git", ["symbolic-ref", "--short", "HEAD"])}`);
     console.log("Review complete.");
   }
 }
