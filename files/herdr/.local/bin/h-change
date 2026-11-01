@@ -24,13 +24,18 @@ const AGENT_FREE = {
   VERY_HIGH: OPENCODE,
 }
 
+const LUNA_HIGH = piAgent("openai-codex/gpt-6-luna:high")
+const LUNA_XHIGH = piAgent("openai-codex/gpt-6-luna:xhigh")
+const LUNA_MAX = piAgent("openai-codex/gpt-6-luna:max")
+const SOL_HIGH = piAgent("openai-codex/gpt-6.1-sol:high")
+
 const AGENT_OPENAI = {
   // luna medium is too dumb
-  LOW: piAgent("openai-codex/gpt-6-luna:high"),
-  MID: piAgent("openai-codex/gpt-6-luna:xhigh"),
-  HIGH: piAgent("openai-codex/gpt-6-luna:max"),
-  // VERY_HIGH: piAgent("openai-codex/gpt-6-luna:max"),
-  VERY_HIGH: piAgent("openai-codex/gpt-6.1-sol:high"),
+  LOW: LUNA_HIGH,
+  MID: LUNA_XHIGH,
+  HIGH: LUNA_MAX,
+  // VERY_HIGH: LUNA_MAX,
+  VERY_HIGH: SOL_HIGH,
 }
 
 const AGENT = AGENT_OPENAI
