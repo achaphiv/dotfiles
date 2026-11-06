@@ -24,10 +24,10 @@ const AGENT_FREE = {
   VERY_HIGH: OPENCODE,
 }
 
-const LUNA_HIGH = piAgent("openai-codex/gpt-6-luna:high")
-const LUNA_XHIGH = piAgent("openai-codex/gpt-6-luna:xhigh")
-const LUNA_MAX = piAgent("openai-codex/gpt-6-luna:max")
-const SOL_HIGH = piAgent("openai-codex/gpt-6.1-sol:high")
+const LUNA_HIGH = piAgent("openai/gpt-6-luna:high")
+const LUNA_XHIGH = piAgent("openai/gpt-6-luna:xhigh")
+const LUNA_MAX = piAgent("openai/gpt-6-luna:max")
+const SOL_HIGH = piAgent("openai/gpt-6.1-sol:high")
 
 const AGENT_OPENAI = {
   // luna medium is too dumb
