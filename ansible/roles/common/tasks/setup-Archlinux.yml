@@ -41,6 +41,7 @@
       - jdk25-openjdk
       - vivid
       - yt-dlp
+      - mise
     state: present
   become: true
 
